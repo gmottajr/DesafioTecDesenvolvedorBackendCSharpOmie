@@ -14,8 +14,12 @@ public static class IoCRegisterDiServicesHandler
         public static IServiceCollection DbContextDiRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<DbContextOmie>(options =>
-                options.UseInMemoryDatabase("OmieMemoryDb")
-                .LogTo(Console.WriteLine, LogLevel.Information));
+            {
+                string? connectionString = configuration.GetConnectionString("DefaultConnection");
+                options.UseSqlServer(connectionString)
+                                    .LogTo(Console.WriteLine, LogLevel.Information);
+            });
+
             return services;
         }
 
