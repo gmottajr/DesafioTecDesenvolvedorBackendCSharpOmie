@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using System.Reflection;
+using Microsoft.OpenApi.Models;
 using Omie.IoC;
 namespace Omie.WebApi;
 
@@ -7,6 +8,13 @@ public static class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+                // Load configuration from appsettings.json and User Secrets
+        builder.Configuration
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddUserSecrets<Assembly>()
+            .AddEnvironmentVariables();
 
         builder.Services.DbContextDiRegistration(builder.Configuration);
         builder.Services.AddApplicationServices();
