@@ -5,7 +5,6 @@ namespace Omie.Domain;
 public class Venda : EntityBaseRoot<long>
 {
     public DateTime DataDaVenda { get; set; } = DateTime.Now;
-    public long VendaId { get; set; }
     public long ClienteId { get; set; }
     public Cliente? Cliente { get; set; }
     public string CodigoVenda { get; set; } = string.Empty;
