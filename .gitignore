@@ -1,0 +1,56 @@
+# Compiled binaries
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.app
+
+# User-specific files
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Logs & Debugging
+logs/
+*.log
+!keep_logs.txt
+coverage/
+TestResults/
+
+# Dependency directories
+node_modules/
+bower_components/
+packages/
+.vs/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Entity Framework migrations & database files
+migrations/
+*.mdf
+*.ldf
+*.db
+
+# Environment & Configuration
+.env
+*.config.user
+appsettings.*.json
+
+# Docker files (exclude build artifacts, not the config files)
+**/[Dd]ockerfile
+**/docker-compose.yml
+.dockerignore
+docker-compose.override.yml
+docker-compose.debug.yml
+
+# Build and publish artifacts
+publish/
+*.publishsettings
+*.deployment
+**/obj/Debug/
+**/obj/Release/
