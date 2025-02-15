@@ -49,7 +49,7 @@ Por exemplo, eu defini o appsetting corrente como:
 ```
 
 ##### Nota:
-O parâmetro TrustServerCertificate=True é necessário para ambientes locais.
+    - O parâmetro TrustServerCertificate=True é necessário para ambientes locais.
 Caso seja necessario, substitua "OmieDb" pelo nome real do seu banco de dados.
 
 ### Passo 3: Aplicar Migrações do Banco de Dados (Se Usando EF Core)
@@ -60,7 +60,7 @@ Caso seu projeto utilize Entity Framework Core, aplique as migrações do banco 
 dotnet ef database update
 ```
 
-Se ainda não houver migrações criadas, gere a primeira:
+    - Se ainda não houver migrações criadas, gere a primeira:
 
 ```cpp
 dotnet ef migrations add InitialCreate
