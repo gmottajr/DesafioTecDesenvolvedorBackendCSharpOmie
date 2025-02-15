@@ -106,9 +106,8 @@ docker rm -f sqlserver_container
 ```
 
 #### Solução de Problemas
-
-    - ❌ Erro de conexão com o banco de dados
-    Verifique se o container do SQL Server está rodando:
+    ❌ Erro de conexão com o banco de dados
+        Verifique se o container do SQL Server está rodando:
     
     ```
     docker ps
