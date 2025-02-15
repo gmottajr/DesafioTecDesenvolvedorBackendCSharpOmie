@@ -105,5 +105,36 @@ Para remover completamente o container:
 docker rm -f sqlserver_container
 ```
 
+#### Solução de Problemas
 
+    - ❌ Erro de conexão com o banco de dados
+        - Verifique se o container do SQL Server está rodando:
+```cpp
+docker ps
+```
+        - Certifique-se de que a porta 1433 está correta na appsettings.json.
+Em Mac/Linux, se houver problemas com localhost, tente usar:
+```cpp
+Server=host.docker.internal,1433;
+```
+
+    - ❌ Erro de porta em uso
+        - Se a porta 1433 já estiver ocupada, descubra o processo em execução:
+```cpp
+sudo lsof -i :1433
+kill -9 <PID>
+```
+
+        - Ou inicie o container em outra porta:
+```cpp
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=SuaSenhaForte!123" \
+  -p 1434:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
+E atualize a appsettings.json:
+```
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost,1434;Database=SeuBancoDeDados;User Id=sa;Password=SuaSenhaForte!123;TrustServerCertificate=True"
+}
+```
 
