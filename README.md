@@ -109,12 +109,12 @@ docker rm -f sqlserver_container
 
     - ❌ Erro de conexão com o banco de dados
         - Verifique se o container do SQL Server está rodando:
-    ```cpp
+    ```
         docker ps
     ```
         - Certifique-se de que a porta 1433 está correta na appsettings.json.
 Em Mac/Linux, se houver problemas com localhost, tente usar:
-    ```cpp
+    ```
         Server=host.docker.internal,1433;
     ```
 
