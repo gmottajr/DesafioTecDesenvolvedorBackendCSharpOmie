@@ -14,7 +14,7 @@ Certifique-se de ter os seguintes softwares instalados:
 
 ### Passo 1: Iniciar o SQL Server no Docker
 Execute o seguinte comando para criar e iniciar um container do SQL Server 2022:
-    - ```
+    - ```cpp
     docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<Senha definida no docker-compose.yml>" \ -p 1433:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
     ```
 
