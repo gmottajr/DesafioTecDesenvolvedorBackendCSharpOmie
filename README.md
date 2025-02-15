@@ -105,7 +105,7 @@ Para remover completamente o container:
 docker rm -f sqlserver_container
 ```
 
-#### Solução de Problemas
+### Solução de Problemas
 
     ❌ Erro de conexão com o banco de dados
         Verifique se o container do SQL Server está rodando:
