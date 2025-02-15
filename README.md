@@ -14,8 +14,31 @@ Certifique-se de ter os seguintes softwares instalados:
 
 ### Passo 1: Iniciar o SQL Server no Docker
 Execute o seguinte comando para criar e iniciar um container do SQL Server 2022:
-```cpp
-    docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=<Senha definida no docker-compose.yml>" \ -p 1433:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
+
+####    Para Linux/macOS (Usando Barra Invertida para Quebra de Linha)
+```sh
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=My#Stron8P4ssw0rd" \
+  -p 1433:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
+```
+    Certifique-se de que não há espaços após a \ no final da linha.
+
+####    Para Windows PowerShell
+```powershell
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=My#Stron8P4ssw0rd" `
+  -p 1433:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
+```
+    No PowerShell, use o acento grave (`) em vez da barra invertida '\' para comandos em várias linhas.
+
+####    Para Windows CMD (Rodar em uma Linha Única)
+```cmd
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=My#Stron8P4ssw0rd" -p 1433:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
+```
+O CMD do Windows não suporta comandos multi-linhas com \, então rode tudo em uma única linha.
+
+#####       Conflito com um Contêiner Existente:
+    Se aparecer um erro dizendo que o nome sqlserver_container já está em uso, remova o contêiner antigo antes de criar um novo:
+```cmd    
+docker rm -f sqlserver_container
 ```
 
 #### Observações:
