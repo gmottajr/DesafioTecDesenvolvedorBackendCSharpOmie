@@ -35,8 +35,9 @@ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=My#Stron8P4ssw0rd" -p 1433:1433 --
 ```
 O CMD do Windows não suporta comandos multi-linhas com \, então rode tudo em uma única linha.
 
-#####       Conflito com um Contêiner Existente:
-    Se aparecer um erro dizendo que o nome sqlserver_container já está em uso, remova o contêiner antigo antes de criar um novo:
+#####           Conflito com um Contêiner Existente:
+Se aparecer um erro dizendo que o nome sqlserver_container já está em uso, remova o contêiner antigo antes de criar um novo:
+
 ```cmd    
 docker rm -f sqlserver_container
 ```
