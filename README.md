@@ -15,7 +15,32 @@ Antes de começar, certifique-se de ter os seguintes requisitos instalados:
 
 ## Configuração e Inicialização dos Contêineres
 
-### Passo 1: Iniciar o SQL Server no Docker
+### Passo 1: Suba os contêineres com Docker Compose:
+
+####        1.1 (Opcional) Parar e remover contêineres antigos (caso existam conflitos)
+```bash
+docker-compose down
+```
+
+ou, se estiver rodando diretamente:
+```bash
+docker stop sqlserver_container
+docker rm -f sqlserver_container
+```
+
+####        1.2 Iniciar os contêineres com Docker Compose (mais recomendado)
+```bash
+docker-compose up -d
+```
+
+####        Esse comando iniciará os serviços em segundo plano.
+Verifique se os contêineres estão rodando:
+```bash
+docker ps
+```
+Você deverá ver os contêineres webapi_container e sqlserver_container em execução.
+
+### Passo 2: Iniciar o SQL Server no Docker
 Execute o seguinte comando para criar e iniciar um container do SQL Server 2022:
 
 ####    Para Linux/macOS (Usando Barra Invertida para Quebra de Linha)
@@ -44,17 +69,6 @@ Se aparecer um erro dizendo que o nome sqlserver_container já está em uso, rem
 ```cmd    
 docker rm -f sqlserver_container
 ```
-####        Suba os contêineres com Docker Compose:
-```bash
-docker-compose up -d
-```
-
-####        Esse comando iniciará os serviços em segundo plano.
-Verifique se os contêineres estão rodando:
-```bash
-docker ps
-```
-Você deverá ver os contêineres webapi_container e sqlserver_container em execução.
 
 #### Observações:
     - A senha (SA_PASSWORD) deve ser a mesma que vc definir no docker-compose.yml.
