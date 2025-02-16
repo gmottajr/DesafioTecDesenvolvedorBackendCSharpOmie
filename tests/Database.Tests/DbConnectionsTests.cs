@@ -5,6 +5,9 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
+using Omie.WebApi;
+using Tests.Common;
+using Microsoft.Extensions.Configuration;
 
 namespace Database.Tests;
 
@@ -16,6 +19,8 @@ public class DbConnectionTests
     [Fact]
     public async Task Should_Connect_To_Database_Successfully()
     {
+        var config = TestUtilities.LoadConfiguration<VendaController>();
+        var strConnection = config.GetConnectionString("DefaultConnection");
         await using var connection = new SqlConnection(_connectionString);
         
         Func<Task> act = async () => await connection.OpenAsync();
