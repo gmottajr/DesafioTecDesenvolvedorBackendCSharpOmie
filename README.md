@@ -8,10 +8,10 @@ Este guia fornece instruções detalhadas para executar a WebAPI e garantir que 
 
 Antes de começar, certifique-se de ter os seguintes requisitos instalados:
 
-    - [Docker](https://docs.docker.com/get-docker/)
-    - [Docker Compose](https://docs.docker.com/compose/install/)
-    - [.NET SDK 9](https://dotnet.microsoft.com/en-us/download/dotnet)
-    - [(Opcional) Postman ou outra ferramenta para testar APIs](https://www.postman.com/downloads/)
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [.NET SDK 9](https://dotnet.microsoft.com/en-us/download/dotnet)
+- [(Opcional) Postman ou outra ferramenta para testar APIs](https://www.postman.com/downloads/)
 
 ## Configuração e Inicialização dos Contêineres
 
