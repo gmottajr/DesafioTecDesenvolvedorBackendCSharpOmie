@@ -3,7 +3,7 @@ using Omie.Domain;
 
 namespace Omie.Application;
 
-public interface IVendaAppService : IAppServiceBase<VendaDto, long>
+public interface IVendaAppService : IAppServiceBase<VendaDto, VendaInsertingDto, long>
 {
 
 }

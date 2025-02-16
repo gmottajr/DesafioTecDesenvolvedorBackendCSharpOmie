@@ -11,7 +11,21 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
 {
     public void Configure(EntityTypeBuilder<Cliente> builder)
     {
-        builder.ToTable("Clientes");
+        builder.ToTable("Clientes", t =>
+        {
+            // -- Disclaimer: Não quero perder tempo com check constraints de banco de dados, pois isso está fora do escopo da especificação do desafio de código.  
+            // -- Meu objetivo aqui é apenas demonstrar que sei como criar CHECK CONSTRAINTS e entendo a importância de validar dados no nível do banco  
+            // -- para garantir um nível mínimo de qualidade dos dados persistidos. Quanto maior for a qualidade dos dados em um sistema,  
+            // -- menor será a suscetibilidade a certos tipos de bugs – especialmente aqueles que exigem sessões de depuração demoradas  
+            // -- devido a problemas com dados em produção.
+            t.HasCheckConstraint("CK_Clientes_CPF", "LEN(CPF) = 11");
+            t.HasCheckConstraint("CK_Clientes_Status", "Status IN (1, 2, 3, 4)");
+            t.HasCheckConstraint("CK_Clientes_Telefone", "LEN(Telefone) BETWEEN 10 AND 20");
+            t.HasCheckConstraint("CK_Clientes_Email", "LEN(Email) > 4 AND Email LIKE '%@%'");
+            t.HasCheckConstraint("CK_Clientes_CreatedAt", "CreatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Clientes_UpdatedAt", "UpdatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Clientes_EmailAtPos", "CHARINDEX('@', Email) > 0");
+        });
 
         // Primary Key
         builder.HasKey(c => c.Id);
@@ -33,12 +47,13 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
 
         builder.Property(c => c.Email)
             .HasMaxLength(100)
-            .IsRequired(false);
+            .HasColumnType("VARCHAR(100)")
+            .IsRequired(true);
 
         builder.Property(c => c.Telefone)
             .HasMaxLength(20)
             .HasColumnType("VARCHAR(20)")
-            .IsRequired(false);
+            .IsRequired();
 
         builder.Property(c => c.Observacao)
             .HasMaxLength(500)
@@ -51,18 +66,6 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
             .HasForeignKey(c => c.EnderecoId)
             .IsRequired(false);
 
-        builder.HasMany(c => c.Pedido)
-            .WithOne(v => v.Cliente)  // Assuming Venda has a reference to Cliente
-            .HasForeignKey(v => v.ClienteId)
-            .IsRequired();
-
-        builder.HasCheckConstraint("CK_Clientes_CPF", "LEN(CPF) = 11");
-        builder.HasCheckConstraint("CK_Clientes_Status", "Status IN (1, 2, 3, 4)");
-        builder.HasCheckConstraint("CK_Clientes_Telefone", "LEN(Telefone) BETWEEN 10 AND 20");
-        builder.HasCheckConstraint("CK_Clientes_Email", "LEN(Email) > 4 AND Email LIKE '%@%'");
-        builder.HasCheckConstraint("CK_Clientes_CreatedAt", "CreatedAt <= GETDATE()");
-        builder.HasCheckConstraint("CK_Clientes_UpdatedAt", "UpdatedAt <= GETDATE()");
-        builder.HasCheckConstraint("CK_Clientes_EmailAtPos", "CHARINDEX('@', Email) > 0");
         builder.HasIndex(c => c.CPF).IsUnique(); // Define uma Unique Key
         builder.HasIndex(c => c.Email).IsUnique(); // Define uma Unique Key
 

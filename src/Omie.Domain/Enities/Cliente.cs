@@ -13,6 +13,5 @@ public class Cliente : EntityBaseRoot<long>
     public long? EnderecoId { get; set; }
     public Endereco? Endereco { get; set; }
     public string? Observacao { get; set; }
-    public List<Venda>? Pedido { get; set; }
 
 }

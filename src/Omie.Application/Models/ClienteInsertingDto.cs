@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Omie.Application.Models.Abstractions;
 
-namespace Omie.Application.Models;
+namespace Omie.Application;
 
-public class ClienteDto : ResourceDtoBaseRoot<long>
+public class ClienteInsertingDto: IResourceDtoBase
 {
     [Required]
     [StringLength(100)]

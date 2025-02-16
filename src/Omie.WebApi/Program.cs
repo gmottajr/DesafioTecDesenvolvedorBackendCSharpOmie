@@ -20,6 +20,7 @@ public static class Program
         builder.Services.AddApplicationServices();
         builder.Services.DataRepositoriesDiRegistration();
         builder.Services.AddConfigurationSettings(builder.Configuration);
+        builder.Services.ConfigAddMapster();
 
         // Add services to the container
         builder.Services.AddControllers();

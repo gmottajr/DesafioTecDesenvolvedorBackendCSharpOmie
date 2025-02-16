@@ -3,7 +3,7 @@ using Omie.Domain;
 
 namespace Omie.Application;
 
-public interface IProdutoAppService : IAppServiceBase<ProdutoDto, long>
+public interface IProdutoAppService : IAppServiceBase<ProdutoDto, ProdutoInsertingDto, long>
 {
 
 }

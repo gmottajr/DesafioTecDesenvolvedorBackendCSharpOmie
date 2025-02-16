@@ -4,7 +4,7 @@
 namespace Omie.Application;
 
 
-public interface IClienteAppService : IAppServiceBase<ClienteDto, long>
+public interface IClienteAppService : IAppServiceBase<ClienteDto, ClienteInsertingDto, long>
 {
 
 }

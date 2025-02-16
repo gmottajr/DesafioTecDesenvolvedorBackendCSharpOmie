@@ -8,7 +8,13 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
 {
     public void Configure(EntityTypeBuilder<Item> builder)
     {
-        builder.ToTable("Items");
+        builder.ToTable("Items", t =>
+        {
+            t.HasCheckConstraint("CK_Item_CreatedAt", "CreatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Item_UpdatedAt", "UpdatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Vendas_Quatidade", "Quantidade > 0");
+            t.HasCheckConstraint("CK_Vendas_ValorTotal", "ValorTotal >= 0");
+        });
 
         // Primary Key
         builder.HasKey(i => new {i.ProdutoId, i.VendaId});
@@ -30,11 +36,6 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
 
         builder.Property(i => i.ValorTotal)
             .IsRequired();
-
-        builder.HasCheckConstraint("CK_Item_CreatedAt", "CreatedAt <= GETDATE()");
-        builder.HasCheckConstraint("CK_Item_UpdatedAt", "UpdatedAt <= GETDATE()");
-        builder.HasCheckConstraint("CK_Vendas_Quatidade", "Quantidade > 0");
-        builder.HasCheckConstraint("CK_Vendas_ValorTotal", "ValorTotal >= 0");
     }
 }
 

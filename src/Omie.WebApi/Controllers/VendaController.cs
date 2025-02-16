@@ -6,7 +6,7 @@ namespace Omie.WebApi;
 
 [ApiController]
 [Route("api/[controller]")]
-public class VendaController : OmieVendasBaseController<VendaDto, long>
+public class VendaController : OmieVendasBaseController<VendaDto, VendaInsertingDto, long>
 {
     public VendaController(IVendaAppService applicationService) : base(applicationService)
     {

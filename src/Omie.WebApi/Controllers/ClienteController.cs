@@ -8,7 +8,7 @@ namespace Omie.WebApi;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ClienteController : OmieVendasBaseController<ClienteDto, long>
+public class ClienteController : OmieVendasBaseController<ClienteDto ,ClienteInsertingDto, long>
 {
     public ClienteController(IClienteAppService applicationService) : base(applicationService)
     {

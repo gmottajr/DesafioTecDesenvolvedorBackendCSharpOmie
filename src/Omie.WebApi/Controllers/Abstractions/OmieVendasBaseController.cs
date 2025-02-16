@@ -6,11 +6,11 @@ namespace Omie.WebApi;
 
 [ApiController]
 [Route("api/[controller]")]
-public abstract class OmieVendasBaseController<TDto, TKey> : ControllerBase where TDto : IResourceDtoBase
+public abstract class OmieVendasBaseController<TDto, TInsertingDto, TKey> : ControllerBase where TDto : IResourceDtoBase where TInsertingDto : IResourceDtoBase
 {
-    protected readonly IAppServiceBase<TDto, TKey> _applicationService;
+    protected readonly IAppServiceBase<TDto, TInsertingDto, TKey> _applicationService;
 
-    public OmieVendasBaseController(IAppServiceBase<TDto, TKey> applicationService)
+    public OmieVendasBaseController(IAppServiceBase<TDto, TInsertingDto, TKey> applicationService)
     {
         _applicationService = applicationService;
     }
@@ -38,7 +38,7 @@ public abstract class OmieVendasBaseController<TDto, TKey> : ControllerBase wher
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add([FromBody] TDto dto)
+    public async Task<IActionResult> Add([FromBody] TInsertingDto dto)
     {
         if (dto == null) return BadRequest();
 
