@@ -9,11 +9,11 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-                // Load configuration from appsettings.json and User Secrets
+        // Load configuration from appsettings.json and User Secrets
         builder.Configuration
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddUserSecrets<Assembly>()
+            .AddUserSecrets<VendaController>()
             .AddEnvironmentVariables();
 
         builder.Services.DbContextDiRegistration(builder.Configuration);
