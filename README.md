@@ -90,7 +90,7 @@ Para verificar os logs do SQL Server no Docker:
 docker logs sqlserver_container
 ```
 
-### Passo 2: Configurar a String de Conexão
+### Passo 3: Configurar a String de Conexão
 
 Modifique o arquivo appsettings.json (ou appsettings.Development.json) do seu projeto para conectar-se ao SQL Server no Docker:
 Por exemplo, eu defini o appsetting corrente como:
@@ -104,7 +104,7 @@ Por exemplo, eu defini o appsetting corrente como:
     - O parâmetro TrustServerCertificate=True é necessário para ambientes locais.
 Caso seja necessario, substitua "OmieDb" pelo nome real do seu banco de dados.
 
-### Passo 3: Aplicar Migrações do Banco de Dados (Se Usando EF Core)
+### Passo 4: Aplicar Migrações do Banco de Dados (Se Usando EF Core)
 
 Caso seu projeto utilize Entity Framework Core, aplique as migrações do banco de dados antes de rodar a API:
 
@@ -119,7 +119,7 @@ dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 
-### Passo 4: Executar a WebAPI
+### Passo 5: Executar a WebAPI
 
 Para iniciar a API, navegue até a pasta raiz do projeto e execute:
 
@@ -132,7 +132,7 @@ Estou usando Docker Compose, execute:
 docker-compose up --build
 ```
 
-### Passo 5: Testar a API
+### Passo 6: Testar a API
 
 Após iniciar a WebAPI, você pode testá-la utilizando cURL, Postman ou diretamente no navegador.
 
@@ -145,7 +145,7 @@ Se estiver rodando em HTTPS, acesse:
 ```cpp
 https://localhost:5001/swagger
 ```
-### Passo 6: Parar e Remover o Container do SQL Server (Se Necessário)
+### Passo 7: Parar e Remover o Container do SQL Server (Se Necessário)
 
 Para parar o container do SQL Server sem removê-lo:
 ```cpp
