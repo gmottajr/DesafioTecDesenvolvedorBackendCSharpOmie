@@ -13,5 +13,5 @@ public class Produto : EntityBaseRoot<long>
     public string? Unidade { get; set; }
     public string? Tipo { get; set; }
     public string? Codigo { get; set; }
-    public long EstoqueId { get; set; }
+    public long? EstoqueId { get; set; }
 }

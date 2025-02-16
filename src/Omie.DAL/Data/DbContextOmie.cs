@@ -1,6 +1,7 @@
 ﻿using Omie.Domain;
 using Omie.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Omie.DAL.FuentApiMappingConfigurations;
 
 namespace Omie.DAL;
 
@@ -17,7 +18,11 @@ public class DbContextOmie: DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+        base.OnModelCreating(modelBuilder);
+
+        // Automatically apply all IEntityTypeConfiguration<TEntity> configurations from the current assembly
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ClienteConfiguration).Assembly);
+    
 
     }
 
