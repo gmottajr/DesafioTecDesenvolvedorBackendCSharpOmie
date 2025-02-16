@@ -6,11 +6,14 @@ Este guia fornece instruções detalhadas para executar a WebAPI e garantir que 
 
 ### Pré-requisitos
 
-Certifique-se de ter os seguintes softwares instalados:
+Antes de começar, certifique-se de ter os seguintes requisitos instalados:
 
-    - Docker
-    - .NET SDK 9
-    - (Opcional) Postman ou outra ferramenta para testar APIs
+    - [Docker](https://docs.docker.com/get-docker/)
+    - [Docker Compose](https://docs.docker.com/compose/install/)
+    - [.NET SDK 9](https://dotnet.microsoft.com/en-us/download/dotnet)
+    - [(Opcional) Postman ou outra ferramenta para testar APIs](https://www.postman.com/downloads/)
+
+## Configuração e Inicialização dos Contêineres
 
 ### Passo 1: Iniciar o SQL Server no Docker
 Execute o seguinte comando para criar e iniciar um container do SQL Server 2022:
@@ -41,24 +44,35 @@ Se aparecer um erro dizendo que o nome sqlserver_container já está em uso, rem
 ```cmd    
 docker rm -f sqlserver_container
 ```
+####        Suba os contêineres com Docker Compose:
+```bash
+docker-compose up -d
+```
+
+####        Esse comando iniciará os serviços em segundo plano.
+Verifique se os contêineres estão rodando:
+```bash
+docker ps
+```
+Você deverá ver os contêineres webapi_container e sqlserver_container em execução.
 
 #### Observações:
     - A senha (SA_PASSWORD) deve ser a mesma que vc definir no docker-compose.yml.
     O container irá rodar o SQL Server na porta 1433 do seu computador.
     Para verificar se o container está em execução:
 
-```cpp
+```bash
 docker ps
 ```
 Se o container estiver parado, reinicie-o com:
 
-```cpp
+```bash
 docker start sqlserver_container
 ```
 
 Para verificar os logs do SQL Server no Docker:
 
-```cpp
+```bash
 docker logs sqlserver_container
 ```
 
@@ -80,13 +94,13 @@ Caso seja necessario, substitua "OmieDb" pelo nome real do seu banco de dados.
 
 Caso seu projeto utilize Entity Framework Core, aplique as migrações do banco de dados antes de rodar a API:
 
-```cpp
+```cmd
 dotnet ef database update
 ```
 
     - Se ainda não houver migrações criadas, gere a primeira:
 
-```cpp
+```cmd
 dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
@@ -95,12 +109,12 @@ dotnet ef database update
 
 Para iniciar a API, navegue até a pasta raiz do projeto e execute:
 
-```cpp
+```cmd
 dotnet run
 ```
 
 Estou usando Docker Compose, execute:
-```cpp
+```bash
 docker-compose up --build
 ```
 
@@ -109,7 +123,7 @@ docker-compose up --build
 Após iniciar a WebAPI, você pode testá-la utilizando cURL, Postman ou diretamente no navegador.
 
 Se o Swagger estiver habilitado, acesse:
-```cpp
+```html
 http://localhost:5000/swagger
 ```
 
