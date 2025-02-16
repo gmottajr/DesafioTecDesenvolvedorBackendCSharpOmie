@@ -15,5 +15,4 @@ public class Cliente : EntityBaseRoot<long>
     public string? Observacao { get; set; }
     public List<Venda>? Pedido { get; set; }
 
-
 }
