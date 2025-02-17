@@ -26,7 +26,6 @@ public static class TestData
         where TControllerForAssemblyRef : ControllerBase
     {
         var entity = fixture.GetEntityFilled<TEntity>(ignoreNulldef, 0);
-        fixture.SeedDataSingle(entity as EntityBaseRoot<long>); // Similarly, adjust if the key type varies.
         return entity;
     }
     // Example for specific entity like Cliente:

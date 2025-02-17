@@ -62,23 +62,14 @@ public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable
         var entityType = model.FindEntityType(typeof(TEntity));
 
         
-        //var properties = entity.GetType().GetProperties();
+        var properties = entity.GetType().GetProperties();
         if (entityType != null)
         {
-            foreach (var prop in entityType.GetType().GetProperties())
+            foreach (var prop in properties)
             {
                 if (prop.PropertyType == typeof(string))
                 {
-                    var propertyType = prop.PropertyType;
-                    // Check for string validations
-                    var storeObject = StoreObjectIdentifier.Create(entityType, StoreObjectType.Table);
-                    var maxLength = ((IReadOnlyProperty)prop).GetMaxLength(storeObject.Value);
                     string value = Guid.NewGuid().ToString().Replace("-", "");
-                    if (maxLength.HasValue)
-                    {
-                        value = value.Substring(0, Math.Min(value.Length, maxLength.Value));
-                    }
-                    
                     prop.SetValue(entity, value);
                 }
                 else if (Nullable.GetUnderlyingType(prop.PropertyType) == typeof(string))
@@ -184,18 +175,18 @@ public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable
                 }
                 else if (prop.PropertyType == typeof(DateTime))
                 {
-                prop.SetValue(entity, DateTime.Now);
+                    prop.SetValue(entity, DateTime.Now);
                 }
                 else if (prop.PropertyType == typeof(DateTime?))
                 {
-                if (!ignoreNulldef)
-                {
-                    prop.SetValue(entity, null);
-                }
-                else
-                {
-                    prop.SetValue(entity, DateTime.Now);
-                }
+                    if (!ignoreNulldef)
+                    {
+                        prop.SetValue(entity, null);
+                    }
+                    else
+                    {
+                        prop.SetValue(entity, DateTime.Now);
+                    }
                 }
                 else if (prop.PropertyType == typeof(EntityBase))
                 {
