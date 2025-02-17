@@ -13,5 +13,5 @@ public class VendaInsertingDto: IResourceDtoBase
     public long ClienteId { get; set; }
      
     [Required]
-    public List<ItemInsertingDto>? Items { get; set; }
+    public List<ItemInsertingDto>? Itens { get; set; }
 }
