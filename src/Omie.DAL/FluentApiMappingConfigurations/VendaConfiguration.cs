@@ -49,8 +49,8 @@ public class VendaConfiguration : IEntityTypeConfiguration<Venda>
         // -- devido a problemas com dados em produção.
         builder.ToTable(t =>
         {
-            t.HasCheckConstraint("CK_Vendas_CreatedAt", "CreatedAt <= GETDATE()");
-            t.HasCheckConstraint("CK_Vendas_UpdatedAt", "UpdatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Vendas_CreatedAt", "CreatedAt <= DATEADD(MINUTE, 30, GETDATE())");
+            t.HasCheckConstraint("CK_Vendas_UpdatedAt", "UpdatedAt <= DATEADD(MINUTE, 30, GETDATE())");
             t.HasCheckConstraint("CK_Vendas_DeletedAt", "DeletedAt <= GETDATE()");
             t.HasCheckConstraint("CK_Vendas_CompletedAt", "CompletedAt <= GETDATE()");
             t.HasCheckConstraint("CK_Vendas_CancelledAt", "CancelledAt <= GETDATE()");

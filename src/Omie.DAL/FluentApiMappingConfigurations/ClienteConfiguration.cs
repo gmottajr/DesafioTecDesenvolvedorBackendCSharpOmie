@@ -22,8 +22,8 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
             t.HasCheckConstraint("CK_Clientes_Status", "Status IN (1, 2, 3, 4)");
             t.HasCheckConstraint("CK_Clientes_Telefone", "LEN(Telefone) BETWEEN 10 AND 20");
             t.HasCheckConstraint("CK_Clientes_Email", "LEN(Email) > 4 AND Email LIKE '%@%'");
-            t.HasCheckConstraint("CK_Clientes_CreatedAt", "CreatedAt <= GETDATE()");
-            t.HasCheckConstraint("CK_Clientes_UpdatedAt", "UpdatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Clientes_CreatedAt", "CreatedAt <= DATEADD(MINUTE, 30, GETDATE())");
+            t.HasCheckConstraint("CK_Clientes_UpdatedAt", "UpdatedAt <= DATEADD(MINUTE, 30, GETDATE())");
             t.HasCheckConstraint("CK_Clientes_EmailAtPos", "CHARINDEX('@', Email) > 0");
         });
 

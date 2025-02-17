@@ -10,8 +10,8 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
     {
         builder.ToTable("Items", t =>
         {
-            t.HasCheckConstraint("CK_Item_CreatedAt", "CreatedAt <= GETDATE()");
-            t.HasCheckConstraint("CK_Item_UpdatedAt", "UpdatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Item_CreatedAt", "CreatedAt <= DATEADD(MINUTE, 30, GETDATE())");
+            t.HasCheckConstraint("CK_Item_UpdatedAt", "UpdatedAt <= DATEADD(MINUTE, 30, GETDATE())");
             t.HasCheckConstraint("CK_Vendas_Quatidade", "Quantidade > 0");
             t.HasCheckConstraint("CK_Vendas_ValorTotal", "ValorTotal >= 0");
         });

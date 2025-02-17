@@ -24,8 +24,8 @@ public class ProdutoConfiguration : IEntityTypeConfiguration<Produto>
             t.HasCheckConstraint("CK_Produtos_Descricao", "LEN(Descricao) <= 500 AND LEN(Descricao) > 10");
             t.HasCheckConstraint("CK_Produtos_Name", "LEN(Nome) <= 80 AND LEN(Nome) > 2");
             t.HasCheckConstraint("CK_Produtos_Imagem", "LEN(Imagem) <= 125 AND LEN(Imagem) > 5");
-            t.HasCheckConstraint("CK_Produtos_CreatedAt", "CreatedAt <= GETDATE()");
-            t.HasCheckConstraint("CK_Produtos_UpdatedAt", "UpdatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Produtos_CreatedAt", "CreatedAt <= DATEADD(MINUTE, 30, GETDATE())");
+            t.HasCheckConstraint("CK_Produtos_UpdatedAt", "UpdatedAt <= DATEADD(MINUTE, 30, GETDATE())");
         });
 
         // Primary Key

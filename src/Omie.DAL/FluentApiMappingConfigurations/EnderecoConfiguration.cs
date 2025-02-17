@@ -15,8 +15,8 @@ public class EnderecoConfiguration : IEntityTypeConfiguration<Endereco>
             // -- para garantir um nível mínimo de qualidade dos dados persistidos. Quanto maior for a qualidade dos dados em um sistema,  
             // -- menor será a suscetibilidade a certos tipos de bugs – especialmente aqueles que exigem sessões de depuração demoradas  
             // -- devido a problemas com dados em produção.
-            t.HasCheckConstraint("CK_Endereco_CreatedAt", "CreatedAt <= GETDATE()");
-            t.HasCheckConstraint("CK_Endereco_UpdatedAt", "UpdatedAt <= GETDATE()");
+            t.HasCheckConstraint("CK_Endereco_CreatedAt", "CreatedAt <= DATEADD(MINUTE, 30, GETDATE())");
+            t.HasCheckConstraint("CK_Endereco_UpdatedAt", "UpdatedAt <= DATEADD(MINUTE, 30, GETDATE())");
             t.HasCheckConstraint("CK_Endereco_Numero", "LEN(Numero) <= 10 and LEN(Numero) > 0");
             t.HasCheckConstraint("CK_Endereco_CEP", "LEN(CEP) = 8");
             t.HasCheckConstraint("CK_Endereco_Estado", "LEN(Estado) = 2");
