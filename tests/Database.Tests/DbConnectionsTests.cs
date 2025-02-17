@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
@@ -21,7 +21,7 @@ public class DbConnectionTests
     {
         var config = TestUtilities.LoadConfiguration<VendaController>();
         var strConnection = config.GetConnectionString("DefaultConnection");
-        await using var connection = new SqlConnection(_connectionString);
+        await using var connection = new SqlConnection(strConnection);
         
         Func<Task> act = async () => await connection.OpenAsync();
         

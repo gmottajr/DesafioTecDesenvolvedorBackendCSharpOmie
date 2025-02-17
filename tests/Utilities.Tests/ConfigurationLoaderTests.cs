@@ -1,5 +1,9 @@
-﻿using Omie.WebApi;
+﻿using System;
+using System.Data;
+using System.Threading.Tasks;
 using Xunit;
+using FluentAssertions;
+using Omie.WebApi;
 using Tests.Common;
 using Microsoft.Extensions.Configuration;
 
