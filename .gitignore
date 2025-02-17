@@ -54,3 +54,5 @@ publish/
 *.deployment
 **/obj/Debug/
 **/obj/Release/
+
+.fake
