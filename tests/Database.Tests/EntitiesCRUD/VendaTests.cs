@@ -40,8 +40,9 @@ public class VendaTests : IClassFixture<DatabaseFixture<DbContextOmie, ClienteCo
         var cliente = await AddOneClient();
         foreach (var venda in vendas)
         {
+            venda.Cliente = null;
             venda.ClienteId = cliente.Id;
-            venda.CodigoVenda = venda.CodigoVenda.Substring(0, 10);
+            venda.CodigoVenda = venda.CodigoVenda.Substring(0, 12);
             venda.DataDaVenda = DateTime.Now;
             await _vendaRepository.AddAsync(venda);
             await _vendaRepository.AddAsync(venda);

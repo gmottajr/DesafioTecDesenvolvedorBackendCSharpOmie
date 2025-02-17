@@ -17,7 +17,6 @@ public static class TestData
         where TControllerForAssemblyRef : ControllerBase
     {
         var entities = fixture.GetEntities<TEntity>(howMany, ignoreNulldef);
-        fixture.SeedData(entities.Cast<EntityBaseRoot<long>>().ToList()); // Assuming all your keys are long. Adjust if needed.
         return entities;
     }
     public static TEntity GetEntity<TEntity, TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, bool ignoreNulldef = false)
