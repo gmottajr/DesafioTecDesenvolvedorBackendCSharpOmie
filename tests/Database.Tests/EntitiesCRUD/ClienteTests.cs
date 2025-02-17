@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Omie.DAL;
+using Omie.Domain;
 using Omie.WebApi;
 using Tests.Common.Data;
 using Tests.Common.Fixtures;
@@ -24,7 +25,7 @@ public class ClienteTests : IClassFixture<DatabaseFixture<DbContextOmie, VendaCo
         retrievedCliente.Should().NotBeNull();
         retrievedCliente.Nome.Should().Be(cliente.Nome);
         retrievedCliente.Id.Should().Be(cliente.Id);
-        retrievedCliente.Cpf.Should().Be(cliente.Cpf);
+        retrievedCliente.CPF.Should().Be(cliente.CPF);
         retrievedCliente.Email.Should().Be(cliente.Email);
     }
 
@@ -43,14 +44,14 @@ public class ClienteTests : IClassFixture<DatabaseFixture<DbContextOmie, VendaCo
         var cliente = AddOneClient();
         var allClientes = await _clienteRepository.GetAllAsync();
         allClientes.Should().NotBeNull();
-        allClientes.Count.Should().BeGraterThan(0);
+        allClientes.Count().Should().BeGreaterThan(0);
         allClientes.Should().Contain(c => c.Id == cliente.Id);
     }
 
     [Fact]
     public async Task Test_UpdateCliente()
     {
-        var cliente = AddOneClient();
+        var cliente = await AddOneClient();
         var newName = "Updated Name";
         cliente.Nome = newName;
         _clienteRepository.Update(cliente);
@@ -62,7 +63,7 @@ public class ClienteTests : IClassFixture<DatabaseFixture<DbContextOmie, VendaCo
     [Fact]
     public async Task Test_DeleteCliente()
     {
-        var cliente = AddOneClient();
+        var cliente = await AddOneClient();
         await _clienteRepository.DeleteAsync(cliente.Id);
         await _clienteRepository.SaveChangesAsync();
         var deletedCliente = await _clienteRepository.GetByIdAsync(cliente.Id);
