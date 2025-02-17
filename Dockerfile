@@ -7,22 +7,13 @@ ARG PROJECT_NAME=OmieVendas.WebApi
 FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS build
 WORKDIR /app
 
-# Copia o arquivo de solução e os arquivos de projeto e restaura as dependências
-COPY *.sln .
-COPY src/Omie.Application/*.csproj ./src/Omie.Application/
-COPY src/Omie.DAL/*.csproj ./src/Omie.DAL/
-COPY src/Omie.Domain/*.csproj ./src/Omie.Domain/
-COPY src/Omie.Ioc/*.csproj ./src/Omie.Ioc/
-COPY src/Omie.WebApi/*.csproj ./src/Omie.WebApi/
-COPY tests/Database.Tests/*.csproj ./tests/Database.Tests/
-COPY tests/Tests.Common/*.csproj ./tests/Tests.Common/
-COPY tests/Utilities.Tests/*.csproj ./tests/Utilities.Tests/
-
+# Copia o arquivo de projeto e restaura as dependências
+COPY *.csproj ./
 RUN dotnet restore
 
 # Copia todos os arquivos do projeto e compila
 COPY . ./
-RUN dotnet publish -c ${BUILD_CONFIGURATION} -o out
+RUN dotnet publish -c Release -o out
 
 # Etapa 2: Configuração do ambiente de execução
 FROM mcr.microsoft.com/dotnet/aspnet:${ASP_NET_RUNTIME} AS runtime
@@ -33,6 +24,19 @@ COPY --from=build /app/out .
 
 # Expõe a porta da API
 EXPOSE 8080
+
+# dotnet restore
+RUN dotnet restore ${PROJECT_NAME}.csproj
+
+# dotnet build
+RUN dotnet build ${PROJECT_NAME}.csproj -c ${BUILD_CONFIGURATION} -o /app/build
+
+# dotnet publish
+RUN dotnet publish ${PROJECT_NAME}.csproj -c ${BUILD_CONFIGURATION} -o /app/publish -r linux-musl-x64 
+
+FROM mcr.microsoft.com/dotnet/aspnet:${ASP_NET_RUNTIME} AS runtm_omie
+WORKDIR /app
+COPY --from=build /app/publish .
 
 # Comando para rodar a aplicação
 ENTRYPOINT ["dotnet", "${PROJECT_NAME}.dll"]
