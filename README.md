@@ -192,3 +192,27 @@ E atualize a appsettings.json:
 ```
 
 
+## OmieClientes.WebApi
+Bem-vindo ao **OmieClientes.WebApi**, um microsserviço projetado para gerenciar operações relacionadas aos clientes dentro do ecossistema Omie. Este serviço segue os princípios SOLID para garantir manutenibilidade, escalabilidade e separação de preocupações.
+###   Funcionalidades
+- **Operações CRUD para Clientes**:
+  - Operações de Criação, Leitura, Atualização e Exclusão de dados de clientes.
+- **Integração com Banco de Dados**:
+  - Utiliza Entity Framework Core para operações ORM com SQL Server.
+- **Autenticação e Autorização**:
+  - Autenticação JWT Bearer implementada para proteger endpoints.
+  - Um endpoint para gerar tokens JWT para fins de autenticação.
+- **Testes Abrangentes**:
+  - Testes unitários e de integração para operações CRUD (`ClienteTests`, `ProdutoTests`, `VendasTests`).
+  - Testes de configuração (`ConfigurationLoaderTests`) para garantir o carregamento correto da configuração da aplicação.
+- **Documentação de API com Swagger**:
+  - Documentação interativa para todos os endpoints.
+  - Configuração de segurança na UI do Swagger para lidar com tokens JWT.
+- **Princípios SOLID**:
+  - **Responsabilidade Única**: Cada classe ou método lida com uma parte da funcionalidade.
+  - **Aberto/Fechado**: O sistema é aberto para extensão, mas fechado para modificação.
+  - **Substituição de Liskov**: Classes derivadas podem substituir classes base sem alterar a funcionalidade.
+  - **Segregação de Interface**: Clientes não são forçados a depender de interfaces que não usam.
+  - **Inversão de Dependência**: Módulos de alto nível não dependem de módulos de baixo nível, ambos dependem de abstrações.
+
+
