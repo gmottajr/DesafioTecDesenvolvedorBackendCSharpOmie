@@ -14,17 +14,19 @@ namespace Tests.Common.Fixtures;
 public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable where TDbContex : DbContext where TControllerForAssemblyRef : ControllerBase
 {
     public TDbContex Context { get; private set; }
+    private Random _random = new Random();
     public DatabaseFixture()
     {
         var config = TestUtilities.LoadConfiguration<TControllerForAssemblyRef>();
-        var connectionString = config.GetConnectionString("TestDbConnectionString");
+        var connStr = config.GetConnectionString("TestDbConnectionString") ?? throw new InvalidOperationException("Connection string not found");
+        var connectionString = string.Format(connStr, typeof(TControllerForAssemblyRef).Name.Substring(0, typeof(TControllerForAssemblyRef).Name.IndexOf("Controller")));
         var options = new DbContextOptionsBuilder<TDbContex>()
             .UseSqlServer(connectionString)
             .Options;
         Context = (TDbContex)Activator.CreateInstance(typeof(TDbContex), options);
         // Ensure the database is clean before running tests
-        Context.Database.EnsureDeleted();
-        Context.Database.Migrate(); // Apply migrations
+        Context?.Database.EnsureDeleted();
+        Context?.Database.Migrate(); // Apply migrations
     }
 
 
@@ -115,7 +117,8 @@ public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable
                 }
                 else if (prop.PropertyType == typeof(int))
                 {
-                prop.SetValue(entity, i);
+                    var value = _random.Next(1, 200);
+                    prop.SetValue(entity, value);
                 }
                 else if (prop.PropertyType == typeof(int?))
                 {
@@ -125,12 +128,14 @@ public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable
                 }
                 else
                 {
-                    prop.SetValue(entity, i);
+                    var value = _random.Next(10, 3000);
+                    prop.SetValue(entity, value);;
                 }
                 }
-                else if (prop.PropertyType == typeof(long))
+                else if (prop.PropertyType == typeof(long) && prop.Name != "Id")
                 {
-                    prop.SetValue(entity, i);
+                    var value = _random.Next(1, 2000);
+                    prop.SetValue(entity, value);
                 }
                 else if (prop.PropertyType == typeof(long?))
                 {
@@ -140,12 +145,14 @@ public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable
                 }
                 else
                 {
-                    prop.SetValue(entity, i);
+                    var value = _random.Next(1, 4000);
+                    prop.SetValue(entity, value);
                 }
                 }
                 else if (prop.PropertyType == typeof(decimal))
                 {
-                prop.SetValue(entity, i);
+                    var value = (decimal)_random.Next(0, 1000) + (decimal)_random.NextDouble();
+                    prop.SetValue(entity, value);
                 }
                 else if (prop.PropertyType == typeof(decimal?))
                 {
@@ -155,7 +162,8 @@ public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable
                 }
                 else
                 {
-                    prop.SetValue(entity, i);
+                    var value = (decimal)_random.Next(0, 1000) + (decimal)_random.NextDouble();
+                    prop.SetValue(entity, value);
                 }
                 }
                 else if (prop.PropertyType == typeof(bool))
