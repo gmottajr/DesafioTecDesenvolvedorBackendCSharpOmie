@@ -22,7 +22,7 @@ public class ClienteDto : ResourceDtoBaseRoot<long>
 
     [DataType(DataType.PhoneNumber)]
     [Required]
-    public string? Telefone { get; set; }
+    public string Telefone { get; set; } = string.Empty;
     public long? EnderecoId { get; set; }
     public string? Observacao { get; set; }
 }
