@@ -64,8 +64,8 @@ public class DtoValidationTests
         {
             new ItemInsertingDto
             {
-                IdVenda = 1,
-                IdProduto = 10,
+                VendaId = 1,
+                ProdutoId = 10,
                 Quantidade = 2
             }
         };
