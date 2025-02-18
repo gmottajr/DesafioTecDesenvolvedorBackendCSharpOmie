@@ -21,10 +21,6 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
         _dbSet = _context.Set<TEntity>() ?? throw new InvalidOperationException("DbSet could not be initialized.");
     }
 
-    /// <summary>
-    /// Gets all entities.
-    /// </summary>
-    /// <returns>A list of all entities.</returns>
     public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
         try

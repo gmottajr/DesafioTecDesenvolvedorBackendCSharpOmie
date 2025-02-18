@@ -11,25 +11,39 @@ using Xunit;
 
 namespace Tests.Common.Fixtures;
 
-public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable where TDbContex : DbContext where TControllerForAssemblyRef : ControllerBase
+public class DatabaseFixture<TDbContext, TControllerForAssemblyRef> : IDisposable where TDbContext : DbContext where TControllerForAssemblyRef : ControllerBase
 {
-    public TDbContex Context { get; private set; }
+    public TDbContext Context { get; private set; }
     private Random _random = new Random();
     public DatabaseFixture()
     {
         var config = TestUtilities.LoadConfiguration<TControllerForAssemblyRef>();
         var connStr = config.GetConnectionString("TestDbConnectionString") ?? throw new InvalidOperationException("Connection string not found");
         var connectionString = string.Format(connStr, typeof(TControllerForAssemblyRef).Name.Substring(0, typeof(TControllerForAssemblyRef).Name.IndexOf("Controller")));
-        var options = new DbContextOptionsBuilder<TDbContex>()
+        var options = new DbContextOptionsBuilder<TDbContext>()
             .UseSqlServer(connectionString)
             .Options;
-        Context = (TDbContex)Activator.CreateInstance(typeof(TDbContex), options);
+        Context = (TDbContext)Activator.CreateInstance(typeof(TDbContext), options);
         // Ensure the database is clean before running tests
         Context?.Database.EnsureDeleted();
         Context?.Database.Migrate(); // Apply migrations
     }
+    
+    /// Static method to create a TDbContext instance with an in-memory database and apply migrations
+    public static TDbContext CreateInMemoryDbContext()
+    {
+        var options = new DbContextOptionsBuilder<TDbContext>()
+            .UseInMemoryDatabase("InMemoryTestDb") 
+            .Options;
 
+        var context = (TDbContext)Activator.CreateInstance(typeof(TDbContext), options);
 
+        // Apply migrations to the in-memory database
+        context?.Database.Migrate(); 
+
+        return context;
+    }
+    
     public void SeedData<TKey>(List<EntityBaseRoot<TKey>> entities)
     {
         foreach (var entity in entities)
@@ -204,7 +218,7 @@ public class DatabaseFixture<TDbContex, TControllerForAssemblyRef> : IDisposable
                 else if (typeof(EntityBase).IsAssignableFrom(prop.PropertyType))
                 {
                     var nestedEntity = (EntityBase)Activator.CreateInstance(prop.PropertyType);
-                    var method = typeof(DatabaseFixture<TDbContex, TControllerForAssemblyRef>).GetMethod(nameof(GetEntityFilled)).MakeGenericMethod(prop.PropertyType);
+                    var method = typeof(DatabaseFixture<TDbContext, TControllerForAssemblyRef>).GetMethod(nameof(GetEntityFilled)).MakeGenericMethod(prop.PropertyType);
                     nestedEntity = (EntityBase)method.Invoke(this, new object[] { ignoreNulldef, i });
                     prop.SetValue(entity, nestedEntity);
                 }
