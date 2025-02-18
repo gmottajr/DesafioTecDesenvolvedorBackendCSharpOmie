@@ -29,7 +29,11 @@ public class ItemTests
     [Fact]
     public void Item_ValorTotal_Should_Be_Calculated_Correctly()
     {
-        var produto = new Produto { Valor = 50.0m };
+        var produto = new Produto
+        {
+            Valor = 50.0m,
+            Id = 1
+        };
         var item = new Item { Produto = produto, Quantidade = 2, ValorTotal = produto.Valor * 2 };
 
         item.ValorTotal.Should().Be(100.0m, "Total value should be quantity multiplied by product value.");

@@ -2,7 +2,7 @@
 using Mapster;
 using Omie.Application.Models;
 using Omie.Application.Services;
-using Omie.Domain;
+using Omie.Domain.Entities;
 using Omie.Domain.enums;
 
 namespace Application.Tests;

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Tests.Common.Fixtures;
 using Omie.Domain.Abstractions;
 using Omie.Domain;
+using Omie.Domain.Entities;
 
 namespace Tests.Common.Data;
 

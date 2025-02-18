@@ -1,16 +1,33 @@
+using FakeItEasy;
 using FluentAssertions;
+using MapsterMapper;
+using Omie.Application;
+using Omie.Application.Models;
+using Omie.Application.Services;
+using Omie.DAL;
 using Omie.Domain.Entities;
 
 namespace Domain.Tests;
 
 public class VendaTests
 {
+    private readonly IVendaAppService _vendaAppService;
+    private readonly IVendaRepository _fakeVendaRepository;
+    private readonly IMapper _fakeMapper;
+
+    public VendaTests()
+    {
+        _fakeVendaRepository = A.Fake<IVendaRepository>();
+        _fakeMapper = A.Fake<IMapper>();
+        _vendaAppService = new VendaAppService(_fakeVendaRepository, _fakeMapper);
+    }
     [Fact]
     public void Sale_Code_must_be_generated_automatically()
     {
         var sale = new Venda
         {
-            Id = 1
+            Id = 1,
+            CodigoVenda = _vendaAppService.GeraCodigoVenda(new VendaInsertingDto() {ClienteId = 1200}),
         };
         sale.CodigoVenda.Should().NotBeNullOrWhiteSpace();
     }
@@ -23,49 +40,5 @@ public class VendaTests
             Id = 1
         };
         sale.Itens.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void Item_Should_Have_Valid_VendaId()
-    {
-        var item = new Item { VendaId = 1 };
-        item.VendaId.Should().BeGreaterThan(0, "Every item must be associated with a valid sale (Venda).");
-    }
-
-    [Fact]
-    public void Item_Should_Have_Valid_ProdutoId()
-    {
-        var item = new Item { ProdutoId = 10 };
-        item.ProdutoId.Should().BeGreaterThan(0, "Every item must be associated with a valid product (Produto).");
-    }
-
-    [Fact]
-    public void Item_Quantidade_Should_Be_Greater_Than_Zero()
-    {
-        var item = new Item { Quantidade = 1 };
-        item.Quantidade.Should().BeGreaterThan(0, "Item quantity must be at least 1.");
-    }
-
-    [Fact]
-    public void Item_ValorTotal_Should_Be_Calculated_Correctly()
-    {
-        var produto = new Produto { Valor = 50.0m };
-        var item = new Item { Produto = produto, Quantidade = 2, ValorTotal = produto.Valor * 2 };
-
-        item.ValorTotal.Should().Be(100.0m, "Total value should be quantity multiplied by product value.");
-    }
-
-    [Fact]
-    public void Item_Should_Allow_Null_Venda()
-    {
-        var item = new Item();
-        item.Venda.Should().BeNull("Item may not always be linked to a Venda object immediately.");
-    }
-
-    [Fact]
-    public void Item_Should_Allow_Null_Produto()
-    {
-        var item = new Item();
-        item.Produto.Should().BeNull("Item may not always be linked to a Produto object immediately.");
     }
 }
