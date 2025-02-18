@@ -37,7 +37,7 @@ public class VendaConfiguration : IEntityTypeConfiguration<Venda>
             .HasForeignKey(v => v.ClienteId)
             .IsRequired();
 
-        builder.HasMany(v => v.Items)
+        builder.HasMany(v => v.Itens)
             .WithOne(i => i.Venda)
             .HasForeignKey(i => i.VendaId)
             .IsRequired();

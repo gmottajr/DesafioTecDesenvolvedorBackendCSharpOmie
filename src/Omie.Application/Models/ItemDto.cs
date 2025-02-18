@@ -6,11 +6,11 @@ public class ItemDto: ResourceDtoBase
 {
     [Required]
     [Range(1, long.MaxValue, ErrorMessage = "O valor do campo VendaId do item da Venda deve ser maior que zero.")]
-    public long IdVenda { get; set; }
+    public long VendaId { get; set; }
     
     [Required]
     [Range(1, long.MaxValue, ErrorMessage = "O valor do campo ProdutoId do item da Venda deve ser maior que zero.")]
-    public long IdProduto { get; set; }
+    public long ProdutoId { get; set; }
     
     [Required]
     [Range(1, short.MaxValue, ErrorMessage = "O valor do campo Quatidade do item da Venda deve ser maior que zero.")]

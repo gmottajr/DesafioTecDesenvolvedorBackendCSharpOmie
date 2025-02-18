@@ -22,10 +22,5 @@ public class VendaDto : ResourceDtoBaseRoot<long>
     public DateTime? DeletedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
     public DateTime? CancelledAt { get; set; }
-    
-    public ClienteDto Cliente { get; set; }
-    
-    [Required]
-    public List<ItemDto> Items { get; set; }
 
 }

@@ -21,7 +21,7 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
 
         // Foreign Keys
         builder.HasOne(i => i.Venda)
-            .WithMany(v => v.Items)
+            .WithMany(v => v.Itens)
             .HasForeignKey(i => i.VendaId)
             .IsRequired();
 

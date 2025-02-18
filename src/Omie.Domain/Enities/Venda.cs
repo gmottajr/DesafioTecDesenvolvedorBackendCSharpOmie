@@ -11,5 +11,5 @@ public class Venda : EntityBaseRoot<long>
     public DateTime? DeletedAt { get; set; }
     public DateTime? CompletedAt { get; set; }
     public DateTime? CancelledAt { get; set; }
-    public List<Item>? Items { get; set; }
+    public List<Item>? Itens { get; set; }
 }
