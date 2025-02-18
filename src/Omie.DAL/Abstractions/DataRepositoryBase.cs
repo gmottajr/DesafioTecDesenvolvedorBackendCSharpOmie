@@ -1,4 +1,5 @@
-﻿using Omie.Domain.Abstractions;
+﻿using System.Linq.Expressions;
+using Omie.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Omie.DAL.Abstractions;
@@ -35,6 +36,18 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
             // Add logging if required
             throw new InvalidOperationException("An error occurred while retrieving entities.", ex);
         }
+    }
+
+    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null)
+    {
+        IQueryable<TEntity> query = _dbSet;
+
+        if (filter != null)
+        {
+            query = query.Where(filter);
+        }
+
+        return await query.ToListAsync();
     }
 
     /// <summary>

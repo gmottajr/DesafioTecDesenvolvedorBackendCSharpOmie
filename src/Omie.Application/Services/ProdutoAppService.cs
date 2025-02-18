@@ -2,6 +2,7 @@
 using Omie.Application.Models;
 using Omie.Domain;
 using MapsterMapper;
+using Omie.Domain.Entities;
 
 namespace Omie.Application.Services;
 

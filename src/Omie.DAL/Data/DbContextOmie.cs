@@ -2,6 +2,7 @@
 using Omie.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Omie.DAL.FuentApiMappingConfigurations;
+using Omie.Domain.Entities;
 
 namespace Omie.DAL;
 

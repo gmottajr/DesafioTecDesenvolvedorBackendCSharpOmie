@@ -1,4 +1,6 @@
-﻿namespace Omie.DAL.Abstractions;
+﻿using System.Linq.Expressions;
+
+namespace Omie.DAL.Abstractions;
 
     /// <summary>
     /// Generic repository abstraction to manage data access for entities.
@@ -12,6 +14,19 @@
         /// </summary>
         /// <returns>An enumerable of all entities.</returns>
         Task<IEnumerable<TEntity>> GetAllAsync();
+        
+        /// <summary>
+        /// Asynchronously retrieves a collection of entities from the database.
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity to retrieve.</typeparam>
+        /// <param name="filter">An optional expression used to filter the entities. If provided, only entities that match the filter will be returned. The expression is applied as a <see cref="Func{TEntity, bool}"/> where <typeparamref name="TEntity"/> represents the entity type. If no filter is specified, all entities of the given type will be returned.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result is an <see cref="IEnumerable{TEntity}"/> containing the retrieved entities.</returns>
+        /// <remarks>
+        /// This method allows for the retrieval of entities from the database with an optional filter applied dynamically via a LINQ expression. 
+        /// If no filter is provided, all entities of the specified type are returned. The filter parameter uses LINQ's expression tree 
+        /// to dynamically create queries based on the provided conditions, enabling flexible and efficient querying.
+        /// </remarks>
+        Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null);
 
         /// <summary>
         /// Gets an entity by its unique identifier.

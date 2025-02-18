@@ -1,7 +1,7 @@
 ﻿using Omie.Domain.Abstractions;
 using Omie.Domain.enums;
 
-namespace Omie.Domain;
+namespace Omie.Domain.Entities;
 
 public class Item : EntityBase
 {

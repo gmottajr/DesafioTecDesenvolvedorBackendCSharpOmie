@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Omie.Domain;
+using Omie.Domain.Entities;
 
 namespace Omie.DAL.FuentApiMappingConfigurations;
 

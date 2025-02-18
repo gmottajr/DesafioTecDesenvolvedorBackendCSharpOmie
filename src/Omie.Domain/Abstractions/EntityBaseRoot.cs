@@ -2,6 +2,6 @@
 
 public abstract class EntityBaseRoot<TKey> : EntityBase
 {
-    public required TKey Id { get; set; }
+    public TKey? Id { get; set; }
 }
 

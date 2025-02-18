@@ -1,6 +1,6 @@
 ﻿using Omie.Domain.Abstractions;
 
-namespace Omie.Domain;
+namespace Omie.Domain.Entities;
 
 public class Produto : EntityBaseRoot<long>
 {
