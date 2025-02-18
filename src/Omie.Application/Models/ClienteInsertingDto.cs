@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Omie.Application.Models.Abstractions;
 
-namespace Omie.Application;
+namespace Omie.Application.Models;
 
 public class ClienteInsertingDto: IResourceDtoBase
 {

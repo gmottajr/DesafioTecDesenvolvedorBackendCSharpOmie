@@ -8,10 +8,11 @@ namespace Omie.Application.Models;
 public class VendaDto : ResourceDtoBaseRoot<long>
 {
     [Required]
-    public long IdCliente { get; set; }
+    public long ClienteId { get; set; }
     
     [Required]
-    public DateTime DataVenda { get; set; }
+    [DataType(DataType.DateTime, ErrorMessage = "Data inválida.")]
+    public DateTime DataDaVenda { get; set; }
 
     public List<ItemDto> Itens { get; set; }
 
