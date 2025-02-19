@@ -17,6 +17,11 @@ public class VendaConfiguration : IEntityTypeConfiguration<Venda>
         // Fields configurations
         builder.Property(v => v.DataDaVenda)
             .IsRequired();
+        
+        builder.Property(v => v.Cliente)
+            .IsRequired()
+            .HasColumnType("VARCHAR(40)")
+            .HasMaxLength(40);
 
         builder.Property(v => v.CodigoVenda)
             .IsRequired()
@@ -31,12 +36,6 @@ public class VendaConfiguration : IEntityTypeConfiguration<Venda>
 
         builder.Property(v => v.CancelledAt)
             .IsRequired(false);
-
-        // Foreign Key relationship to Cliente
-        builder.HasOne(v => v.Cliente)
-            .WithMany()
-            .HasForeignKey(v => v.ClienteId)
-            .IsRequired();
 
         builder.HasMany(v => v.Itens)
             .WithOne(i => i.Venda)
@@ -56,6 +55,7 @@ public class VendaConfiguration : IEntityTypeConfiguration<Venda>
             t.HasCheckConstraint("CK_Vendas_CompletedAt", "CompletedAt <= GETDATE()");
             t.HasCheckConstraint("CK_Vendas_CancelledAt", "CancelledAt <= GETDATE()");
             t.HasCheckConstraint("CK_Vendas_CodigoVenda", "Len(CodigoVenda) > 12 ");
+            t.HasCheckConstraint("CK_Vendas_Cliente", "Len(Cliente) > 2 and Len(Cliente) <= 40");
         });
         builder.HasIndex(v => v.CodigoVenda).IsUnique();
     }

@@ -14,11 +14,12 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
             t.HasCheckConstraint("CK_Item_CreatedAt", "CreatedAt <= DATEADD(MINUTE, 30, GETDATE())");
             t.HasCheckConstraint("CK_Item_UpdatedAt", "UpdatedAt <= DATEADD(MINUTE, 30, GETDATE())");
             t.HasCheckConstraint("CK_Vendas_Quatidade", "Quantidade > 0");
-            t.HasCheckConstraint("CK_Vendas_ValorTotal", "ValorTotal >= 0");
+            t.HasCheckConstraint("CK_Vendas_ValorUnitario", "ValorUnitario >= 0");
+            t.HasCheckConstraint("CK_Vendas_Produrto", "LEN(Produto) >= 2 and LEN(Produto) <= 100");
         });
 
         // Primary Key
-        builder.HasKey(i => new {i.ProdutoId, i.VendaId});
+        builder.HasKey(i => new {i.Id});
 
         // Foreign Keys
         builder.HasOne(i => i.Venda)
@@ -26,17 +27,18 @@ public class ItemConfiguration : IEntityTypeConfiguration<Item>
             .HasForeignKey(i => i.VendaId)
             .IsRequired();
 
-        builder.HasOne(i => i.Produto)
-            .WithMany()
-            .HasForeignKey(i => i.ProdutoId)
-            .IsRequired();
+        builder.Property(p => p.Produto)
+                    .HasMaxLength(100)
+                    .IsRequired();
 
-        // Fields configurations
         builder.Property(i => i.Quantidade)
             .IsRequired();
 
-        builder.Property(i => i.ValorTotal)
+        builder.Property(i => i.ValorUnitario)
             .IsRequired();
+        
+        builder.Ignore(i => i.ValorTotal);
+        builder.HasIndex(i => new {i.VendaId, i.Produto}).IsUnique();
     }
 }
 

@@ -11,8 +11,8 @@ public class VendaInsertingDto: IResourceDtoBase
     public DateTime DataDaVenda { get; set; }
     
     [Required]
-    [Range(1, long.MaxValue, ErrorMessage = "O valor do campo ClienteId da Venda deve ser maior que zero.")]
-    public long ClienteId { get; set; }
+    [StringLength(40, MinimumLength = 2, ErrorMessage = "O campo Cliente deve ter entre 2 e 40 caracteres.")]
+    public string Cliente { get; set; }
      
     [Required]
     public List<ItemInsertingDto>? Itens { get; set; }

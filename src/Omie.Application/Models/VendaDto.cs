@@ -8,7 +8,8 @@ namespace Omie.Application.Models;
 public class VendaDto : ResourceDtoBaseRoot<long>
 {
     [Required]
-    public long ClienteId { get; set; }
+    [StringLength(40, MinimumLength = 2, ErrorMessage = "O campo Cliente deve ter entre 2 e 40 caracteres.")]
+    public string Cliente { get; set; }
     
     [Required]
     [DataType(DataType.DateTime, ErrorMessage = "Data inválida.")]

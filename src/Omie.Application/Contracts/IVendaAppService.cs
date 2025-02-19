@@ -5,7 +5,7 @@ namespace Omie.Application;
 
 public interface IVendaAppService : IAppServiceBase<VendaDto, VendaInsertingDto, long>
 {
-    string GeraCodigoVenda(VendaInsertingDto dto);
+    string GenerateCodigoVenda(VendaInsertingDto dto);
     Task<bool>  Cancelar(long id);
     Task<bool>  CompletarVenda(long id, DateTime dataCompletado);
     Task<bool> AlterarData(long id, DateTime dataAlterado);

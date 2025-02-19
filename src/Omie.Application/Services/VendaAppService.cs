@@ -9,8 +9,32 @@ namespace Omie.Application.Services;
 
 public class VendaAppService : AppServiceBase<VendaDto, VendaInsertingDto, Venda, long>, IVendaAppService
 {
+    protected new readonly IVendaRepository _repository;
+
     public VendaAppService(IVendaRepository repository, IMapper mapper) : base(repository, mapper)
     {
+        _repository = repository;
+    }
+
+    public override async Task<VendaDto> AddAsync(VendaInsertingDto dto)
+    {
+        var domain = _mapper.Map<Venda>(dto);
+        domain.CodigoVenda = GenerateCodigoVenda(dto); 
+        await _repository.AddAsync(domain);
+        await _repository.SaveChangesAsync();
+        return _mapper.Map<VendaDto>(domain);
+    }
+
+    /// <summary>
+    /// Regra hipotética para cálculo do percentual de venda para fins de lucro
+    /// </summary>
+    /// <returns> valor percentual a ser plicado no item da venda </returns>
+    /// </summary>
+    /// <returns></returns>
+    private decimal GetPercentualVenda()
+    {
+        var random = new Random();
+        return (decimal)(random.Next(5, 31)) / 100;
     }
 
     /// <summary>
@@ -20,14 +44,14 @@ public class VendaAppService : AppServiceBase<VendaDto, VendaInsertingDto, Venda
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public string GeraCodigoVenda(VendaInsertingDto dto)
+    public string GenerateCodigoVenda(VendaInsertingDto dto)
     {
         if (dto == null)
             throw new InvalidOperationException("Não foi possível gerar o código da venda: Venda inexistente.");
-        if (dto.ClienteId <= 0)
+        if (string.IsNullOrEmpty(dto.Cliente))
             throw new ArgumentException("Não foi possível gerar o código da venda: Cliente inexistente.");
         
-        return $"{DateTime.UtcNow:yyyyMMddHHmmss}-{dto.ClienteId}";
+        return $"{DateTime.UtcNow:yyyyMMddHHmmss}-{dto.Cliente.Replace(" ", "-").ToUpper()}";
     }
 
     public async Task<bool> Cancelar(long id)
