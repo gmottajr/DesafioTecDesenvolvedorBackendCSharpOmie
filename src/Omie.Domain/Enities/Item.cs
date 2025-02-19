@@ -1,14 +1,22 @@
-﻿using Omie.Domain.Abstractions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Omie.Domain.Abstractions;
 using Omie.Domain.enums;
 
 namespace Omie.Domain.Entities;
 
-public class Item : EntityBase
+public class Item : EntityBaseRoot<long>
 {
     public long VendaId { get; set; }
-    public long ProdutoId { get; set; }
     public short Quantidade { get; set; }
     public Venda? Venda { get; set; }
-    public Produto? Produto { get; set; }
-    public decimal ValorTotal { get; set; }
+    public string Produto { get; set; }
+    public decimal ValorUnitario { get; set; }
+    
+    [NotMapped]
+    public decimal ValorTotal { get => GetValorTota(); }
+
+    private decimal GetValorTota()
+    {
+        return Quantidade * ValorUnitario;
+    }
 }
