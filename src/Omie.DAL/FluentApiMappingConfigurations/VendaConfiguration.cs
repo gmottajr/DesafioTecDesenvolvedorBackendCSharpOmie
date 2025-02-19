@@ -55,7 +55,7 @@ public class VendaConfiguration : IEntityTypeConfiguration<Venda>
             t.HasCheckConstraint("CK_Vendas_DeletedAt", "DeletedAt <= GETDATE()");
             t.HasCheckConstraint("CK_Vendas_CompletedAt", "CompletedAt <= GETDATE()");
             t.HasCheckConstraint("CK_Vendas_CancelledAt", "CancelledAt <= GETDATE()");
-            t.HasCheckConstraint("CK_Vendas_CodigoVenda", "Len(CodigoVenda) = 12 ");
+            t.HasCheckConstraint("CK_Vendas_CodigoVenda", "Len(CodigoVenda) > 12 ");
         });
         builder.HasIndex(v => v.CodigoVenda).IsUnique();
     }
