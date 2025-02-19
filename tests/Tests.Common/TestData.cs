@@ -1,79 +1,93 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Tests.Common.Fixtures;
 using Omie.Domain.Abstractions;
-using Omie.Domain;
 using Omie.Domain.Entities;
+using Omie.Application.Models.Abstractions;
+using Microsoft.Extensions.Configuration;
+using Omie.DAL;
 
 namespace Tests.Common.Data;
 
 public static class TestData
 {
-    public static List<TEntity> GetEntities<TEntity, TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, int howMany = 1, bool ignoreNulldef = false)
+    public const string DefaultTestConnectionStringAlias = "TestDbConnectionString";
+    public static List<TEntity> GetEntities<TEntity, TDbContext>(DatabaseFixture<TEntity, TDbContext> fixture, int howMany = 1, bool ignoreNulldef = false)
         where TEntity : EntityBase
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
+        where TDbContext : DbContext
     {
         var entities = fixture.GetEntities<TEntity>(howMany, ignoreNulldef);
         return entities;
     }
-    public static TEntity GetEntity<TEntity, TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, bool ignoreNulldef = false)
+    public static TEntity GetEntity<TEntity, TDbContext>(DatabaseFixture<TEntity, TDbContext> fixture, bool ignoreNulldef = false)
+        where TDbContext : DbContext
         where TEntity : EntityBase
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
     {
-        var entity = fixture.GetEntityFilled<TEntity>(ignoreNulldef, 0);
+        var entity = fixture.GetEntityFilled<TEntity>();
         return entity;
     }
     // Example for specific entity like Cliente:
-    public static List<Cliente> GetClientes<TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, int howMany = 2, bool ignoreNulldef = false)
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
+    public static Cliente GetCliente<TDbContext>(DatabaseFixture<Cliente, TDbContext> fixture, bool ignoreNulldef = false) 
+        where TDbContext : DbContext
     {
-        return GetEntities<Cliente, TDbContex, TControllerForAssemblyRef>(fixture, howMany, ignoreNulldef);
-    }
-    public static Cliente GetCliente<TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, bool ignoreNulldef = false)
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
-    {
-        return GetEntity<Cliente, TDbContex, TControllerForAssemblyRef>(fixture, ignoreNulldef);
-    }
-    // Repeat the pattern for other entities like Enderecos, Produtos, etc.
-    public static List<Endereco> GetEnderecos<TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, int howMany = 2, bool ignoreNulldef = false)
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
-    {
-        return GetEntities<Endereco, TDbContex, TControllerForAssemblyRef>(fixture, howMany, ignoreNulldef);
+        return GetEntity(fixture, ignoreNulldef);
     }
     
-    public static Endereco GetEndereco<TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, bool ignoreNulldef = false)
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
+    
+    public static Endereco GetEndereco<TDbContext>(DatabaseFixture<Endereco, TDbContext> fixture, bool ignoreNulldef = false) 
+        where TDbContext : DbContext
     {
-        return GetEntity<Endereco, TDbContex, TControllerForAssemblyRef>(fixture, ignoreNulldef);
+        return GetEntity(fixture, ignoreNulldef);
+    }
+    
+    public static Produto GetProduto<TDbContext>(DatabaseFixture<Produto, TDbContext> fixture, bool ignoreNulldef = false) 
+        where TDbContext : DbContext
+    {
+        return GetEntity(fixture, ignoreNulldef);
+    }
+    
+    
+    public static Venda GetVenda<TDbContext>(DatabaseFixture<Venda, TDbContext> fixture, bool ignoreNulldef = false) 
+        where TDbContext : DbContext
+    {
+        return GetEntity(fixture, ignoreNulldef);
+    }
+    
+    /// Static method to create a TDbContext instance with an in-memory database and apply migrations
+    public  static TDbContext CreateInMemoryDbContext<TDbContext>() where TDbContext : DbContext
+    {
+        var options = new DbContextOptionsBuilder<TDbContext>()
+            .UseInMemoryDatabase("InMemoryTestDb") 
+            .Options;
+
+        var context = (TDbContext)Activator.CreateInstance(typeof(TDbContext), options)!;
+        
+        return context;
     }
 
-    public static List<Produto> GetProdutos<TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, int howMany = 2, bool ignoreNulldef = false)
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
+    public static TDbContext CreateSQlServerTestDbContext<TDbContext, TEntity>() 
+        where TDbContext : DbContext
     {
-        return GetEntities<Produto, TDbContex, TControllerForAssemblyRef>(fixture, howMany, ignoreNulldef);
+        var config = TestUtilities.LoadConfiguration();
+        var connectionString = config.GetConnectionString(DefaultTestConnectionStringAlias);
+        connectionString = string.Format(connectionString ??
+            throw new InvalidOperationException("Connection string not found in configuration file."), 
+            typeof(TEntity).Name.Replace("Dto", string.Empty, StringComparison.CurrentCultureIgnoreCase));
+        var options = new DbContextOptionsBuilder<TDbContext>()
+            .UseSqlServer(connectionString)
+            .Options;
+
+        var context = (TDbContext)Activator.CreateInstance(typeof(TDbContext), options)!;
+
+        return context;
     }
 
-    public static Produto GetProduto<TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, bool ignoreNulldef = false)
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
+    public static List<Cliente> GetClientes(DatabaseFixture<Cliente, DbContextOmie> fixture, int count, bool ignoreNulldef)
     {
-        return GetEntity<Produto, TDbContex, TControllerForAssemblyRef>(fixture, ignoreNulldef);
+        return GetEntities(fixture, count, ignoreNulldef);
     }
 
-    public static List<Venda> GetVendas<TDbContex, TControllerForAssemblyRef>(DatabaseFixture<TDbContex, TControllerForAssemblyRef> fixture, int howMany = 2, bool ignoreNulldef = false)
-        where TDbContex : DbContext
-        where TControllerForAssemblyRef : ControllerBase
+    public static IEnumerable<Venda> GetVendas(DatabaseFixture<Venda, DbContextOmie> fixture, int count)
     {
-        return GetEntities<Venda, TDbContex, TControllerForAssemblyRef>(fixture, howMany, ignoreNulldef);
+        return GetEntities(fixture, count);
     }
 }

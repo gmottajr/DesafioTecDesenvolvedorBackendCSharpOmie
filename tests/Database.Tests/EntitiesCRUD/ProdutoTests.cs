@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Omie.Application.Models;
 using Omie.DAL;
 using Omie.Domain.Entities;
 using Omie.WebApi;
@@ -7,15 +8,16 @@ using Tests.Common.Fixtures;
 
 namespace Database.Tests;
 
-public class ProdutoTests : IClassFixture<DatabaseFixture<DbContextOmie, ProdutoController>>
+public class ProdutoTests : IClassFixture<DatabaseFixture<Produto, DbContextOmie>>
 {
-    private readonly DatabaseFixture<DbContextOmie, ProdutoController> _fixture;
+    private readonly DatabaseFixture<Produto, DbContextOmie> _fixture;
     private readonly IProdutoRepository _produtoRepository;
 
-    public ProdutoTests(DatabaseFixture<DbContextOmie, ProdutoController> fixture)
+    public ProdutoTests(DatabaseFixture<Produto, DbContextOmie> fixture)
     {
         _fixture = fixture;
-        _produtoRepository = new ProdutoRepository(fixture.Context);
+        _fixture.SetWorkWithSqlServer();
+        _produtoRepository = new ProdutoRepository(_fixture.Context);
     }
 
     [Fact]

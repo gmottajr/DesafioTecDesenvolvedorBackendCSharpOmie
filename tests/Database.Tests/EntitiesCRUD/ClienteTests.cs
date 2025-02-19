@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Omie.Application.Models;
 using Omie.DAL;
 using Omie.Domain.Entities;
 using Omie.WebApi;
@@ -7,13 +8,14 @@ using Tests.Common.Fixtures;
 
 namespace Database.Tests;
 
-public class ClienteTests : IClassFixture<DatabaseFixture<DbContextOmie, ClienteController>>
+public class ClienteTests : IClassFixture<DatabaseFixture<Cliente, DbContextOmie>>
 {
-    private readonly DatabaseFixture<DbContextOmie, ClienteController> _fixture;
+    private readonly DatabaseFixture<Cliente, DbContextOmie> _fixture;
     private readonly IClienteRepository _clienteRepository;
-    public ClienteTests(DatabaseFixture<DbContextOmie, ClienteController> fixture)
+    public ClienteTests(DatabaseFixture<Cliente, DbContextOmie> fixture) 
     {
         _fixture = fixture;
+        _fixture.SetWorkWithSqlServer();
         _clienteRepository = new ClienteRepository(_fixture.Context);
     }
 

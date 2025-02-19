@@ -1,3 +1,4 @@
+using AutoFixture;
 using FakeItEasy;
 using FluentAssertions;
 using MapsterMapper;
@@ -27,7 +28,7 @@ public class VendaTests
         var sale = new Venda
         {
             Id = 1,
-            CodigoVenda = _vendaAppService.GeraCodigoVenda(new VendaInsertingDto() {ClienteId = 1200}),
+            CodigoVenda = _vendaAppService.GenerateCodigoVenda(new VendaInsertingDto() {Cliente = new Fixture().Create<string>()}),
         };
         sale.CodigoVenda.Should().NotBeNullOrWhiteSpace();
     }

@@ -7,10 +7,10 @@ namespace Tests.Common;
 
 public static class TestUtilities
 {
-    public static IConfigurationRoot LoadConfiguration<T>() where T : class
+    public static IConfigurationRoot LoadConfiguration() 
     {
-        var assemblyLocation = Path.GetDirectoryName(Assembly.GetAssembly(typeof(T))?.Location);
-        
+        var gotPath = Assembly.GetExecutingAssembly().Location;
+        var assemblyLocation = Path.GetDirectoryName(gotPath);
         if (string.IsNullOrEmpty(assemblyLocation))
         {
             throw new InvalidOperationException("Could not determine the assembly location.");
@@ -19,7 +19,8 @@ public static class TestUtilities
         return new ConfigurationBuilder()
             .SetBasePath(assemblyLocation)  // Set base path dynamically based on the assembly of the type `T`
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddUserSecrets<T>()  
+            .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true)
             .Build();
     }
+    
 }

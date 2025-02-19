@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
 using Mapster;
 using Omie.Application.Models;
 using Omie.Application.Services;
@@ -134,17 +135,18 @@ public class MappingTests
         // Arrange
         var dto = new ItemDto
         {
-            VendaId = 1,
-            ProdutoId = 2,
-            Quantidade = 3,
-            ValorUnitario = 10.5m
+            Id = new Fixture().Create<long>(),
+            VendaId = new Fixture().Create<long>(),
+            Produto = new Fixture().Create<string>(),
+            Quantidade = new Fixture().Create<short>(),
+            ValorUnitario = new Fixture().Create<decimal>()
         };
         // Act
         var entity = dto.Adapt<Item>();
         // Assert
         entity.Should().NotBeNull();
         entity.VendaId.Should().Be(dto.VendaId);
-        entity.ProdutoId.Should().Be(dto.ProdutoId);
+        entity.Produto.Should().Be(dto.Produto);
         entity.Quantidade.Should().Be(dto.Quantidade);
     }
     
@@ -154,17 +156,19 @@ public class MappingTests
         // Arrange
         var entity = new Item
         {
-            VendaId = 1,
-            ProdutoId = 2,
-            Quantidade = 3,
-            ValorTotal = 31.5m 
+            Id = new Fixture().Create<long>(),
+            VendaId = new Fixture().Create<long>(),
+            Produto = new Fixture().Create<string>(),
+            Quantidade = new Fixture().Create<short>(),
+            ValorUnitario = new Fixture().Create<decimal>()
         };
         // Act
         var dto = entity.Adapt<ItemDto>();
         // Assert
         dto.Should().NotBeNull();
+        dto.Id.Should().Be(entity.Id);
         dto.VendaId.Should().Be(entity.VendaId);
-        dto.ProdutoId.Should().Be(entity.ProdutoId);
+        dto.Produto.Should().Be(entity.Produto);
         dto.Quantidade.Should().Be(entity.Quantidade);
     }
     
@@ -172,27 +176,41 @@ public class MappingTests
     public void Venda_To_VendaDto_Should_Map_Correctly()
     {
         // Arrange
+        var gotVendaId = new Fixture().Create<long>();
+        var gotCliente = new Fixture().Create<string>();
+        var gotDataDaVenda = new Fixture().Create<DateTime>();
+        var gotCodigoVenda = new Fixture().Create<string>();
+        var gotProduto = new Fixture().Create<string>();
+        var gotQuantidade = new Fixture().Create<short>();
+        var gotValorUnitario = new Fixture().Create<decimal>();
+
         var entity = new Venda
         {
-            Id = 1,
-            ClienteId = 2,
-            DataDaVenda = DateTime.Now,
-            CodigoVenda = "V001",
-            Itens = new List<Item> { new Item { VendaId = 1, ProdutoId = 3, Quantidade = 1, ValorTotal = 10m } }
+            Id = gotVendaId,
+            Cliente = gotCliente,
+            DataDaVenda = gotDataDaVenda,
+            CodigoVenda = gotCodigoVenda,
+            Itens = new List<Item> { new Item 
+            { 
+                VendaId = gotVendaId, 
+                Produto = gotProduto, 
+                Quantidade = gotQuantidade, 
+                ValorUnitario = gotValorUnitario 
+            } 
+            }
         };
         // Act
         var dto = entity.Adapt<VendaDto>();
         // Assert
         dto.Should().NotBeNull();
         dto.Id.Should().Be(entity.Id);
-        dto.ClienteId.Should().Be(entity.ClienteId);
+        dto.Cliente.Should().Be(entity.Cliente);
         dto.DataDaVenda.Should().Be(entity.DataDaVenda);
         dto.CodigoVenda.Should().Be(entity.CodigoVenda);
         dto.Itens.Should().NotBeNull().And.HaveCount(1);
-        dto.Itens.First().VendaId.Should().Be(1);
-        dto.Itens.First().ProdutoId.Should().Be(3);
-        dto.Itens.First().Quantidade.Should().Be(1);
-        // Note: ValorUnitario might need special handling if not directly mapped
+        dto.Itens.First().VendaId.Should().Be(gotVendaId);
+        dto.Itens.First().Produto.Should().Be(gotProduto);
+        dto.Itens.First().Quantidade.Should().Be(gotQuantidade);
     }
     
     [Fact]
@@ -262,50 +280,72 @@ public class MappingTests
     [Fact]
     public void VendaDto_To_Venda_Should_Map_Correctly()
     {
+        var gotVendaId = new Fixture().Create<long>();
+        var gotProduto = new Fixture().Create<string>(); 
+        var gotQuantidade = new Fixture().Create<short>();
+        var gotValorUnitario = new Fixture().Create<decimal>(); 
         // Arrange
         var dto = new VendaDto
         {
-            Id = 1,
-            ClienteId = 2,
-            DataDaVenda = DateTime.Now,
-            CodigoVenda = "V001",
-            Itens = new List<ItemDto> { new ItemDto { VendaId = 1, ProdutoId = 3, Quantidade = 1, ValorUnitario = 10m } }
+            Id = gotVendaId,
+            Cliente = new Fixture().Create<string>(),
+            DataDaVenda = new Fixture().Create<DateTime>(),
+            CodigoVenda = new Fixture().Create<string>(),
+            Itens = new List<ItemDto> { new ItemDto { 
+                Id = new Fixture().Create<long>(),
+                VendaId = gotVendaId, 
+                Produto = gotProduto, 
+                Quantidade = gotQuantidade, 
+                ValorUnitario = gotValorUnitario
+                } }
         };
         // Act
         var entity = dto.Adapt<Venda>();
         // Assert
         entity.Should().NotBeNull();
         entity.Id.Should().Be(dto.Id);
-        entity.ClienteId.Should().Be(dto.ClienteId);
+        entity.Cliente.Should().Be(dto.Cliente);
         entity.DataDaVenda.Should().Be(dto.DataDaVenda);
         entity.CodigoVenda.Should().Be(dto.CodigoVenda);
         entity.Itens.Should().NotBeNull().And.HaveCount(1);
-        entity.Itens.First().VendaId.Should().Be(1);
-        entity.Itens.First().ProdutoId.Should().Be(3);
-        entity.Itens.First().Quantidade.Should().Be(1);
-        // Note: ValorTotal might be calculated or set separately
+        entity.Itens.First().Id.Should().Be(dto.Itens.First().Id);
+        entity.Itens.First().VendaId.Should().Be(gotVendaId);
+        entity.Itens.First().Produto.Should().Be(gotProduto);
+        entity.Itens.First().Quantidade.Should().Be(gotQuantidade);
+        entity.Itens.First().ValorUnitario.Should().Be(gotValorUnitario);
     }
     
     [Fact]
     public void VendaInsertingDto_To_Venda_Should_Map_Correctly()
     {
         // Arrange
+        var gotCliente = new Fixture().Create<string>();
+        var gotDataDaVenda = new Fixture().Create<DateTime>();
+        var gotProduto = new Fixture().Create<string>();
+        var gotQuantidade = new Fixture().Create<short>();
+        var gotValorUnitario = new Fixture().Create<decimal>();
+
         var dto = new VendaInsertingDto
         {
-            ClienteId = 2,
-            DataDaVenda = DateTime.Now,
-            Itens = new List<ItemInsertingDto> { new ItemInsertingDto { VendaId = 1, ProdutoId = 3, Quantidade = 1m } }
+            Cliente = gotCliente,
+            DataDaVenda = gotDataDaVenda,
+            Itens = new List<ItemInsertingDto> { new ItemInsertingDto
+            { 
+            ValorUnitario = gotValorUnitario,
+            Produto = gotProduto, 
+            Quantidade = gotQuantidade
+            } }
         };
         // Act
         var entity = dto.Adapt<Venda>();
         // Assert
         entity.Should().NotBeNull();
-        entity.ClienteId.Should().Be(dto.ClienteId);
+        entity.Cliente.Should().Be(dto.Cliente);
         entity.DataDaVenda.Should().Be(dto.DataDaVenda);
         entity.Itens.Should().NotBeNull().And.HaveCount(1);
-        entity.Itens.First().VendaId.Should().Be(1);
-        entity.Itens.First().ProdutoId.Should().Be(3);
-        entity.Itens.First().Quantidade.Should().Be(1); // Note: Here we might need type conversion if Quantidade is short in Item
+        entity.Itens.First().VendaId.Should().Be(0); 
+        entity.Itens.First().Produto.Should().Be(gotProduto);
+        entity.Itens.First().Quantidade.Should().Be(gotQuantidade); 
     }
     
     [Fact]

@@ -19,7 +19,7 @@ public class DbConnectionTests
     [Fact]
     public async Task Should_Connect_To_Database_Successfully()
     {
-        var config = TestUtilities.LoadConfiguration<VendaController>();
+        var config = TestUtilities.LoadConfiguration();
         var strConnection = config.GetConnectionString("DefaultConnection");
         await using var connection = new SqlConnection(strConnection);
         

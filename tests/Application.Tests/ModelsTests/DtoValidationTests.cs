@@ -7,6 +7,7 @@ using FluentAssertions;
 using Xunit;
 using Omie.Application.Models;
 using Omie.Application.Models.Abstractions;
+using AutoFixture;
 
 
 namespace Application.Tests.Models;
@@ -59,14 +60,13 @@ public class DtoValidationTests
     {
         var venda = A.Fake<VendaInsertingDto>();
         venda.DataDaVenda = DateTime.UtcNow;
-        venda.ClienteId = 1;
+        venda.Cliente = new Fixture().Create<string>();
         venda.Itens = new List<ItemInsertingDto>
         {
             new ItemInsertingDto
             {
-                VendaId = 1,
-                ProdutoId = 10,
-                Quantidade = 2
+                Produto = new Fixture().Create<string>(),
+                Quantidade = new Fixture().Create<short>(),
             }
         };
 
@@ -131,7 +131,7 @@ public class DtoValidationTests
         var venda = new VendaInsertingDto
         {
             DataDaVenda = default, // Invalid: DateTime default value
-            ClienteId = 0, // Invalid: Must be greater than zero
+            Cliente = string.Empty, // Invalid
             Itens = null // Invalid: Required field
         };
 
@@ -140,7 +140,7 @@ public class DtoValidationTests
         isValid.Should().BeFalse();
         results.Should().NotBeEmpty();
         results.Should().Contain(r => r.ErrorMessage.Contains("Data inválida."));
-        results.Should().Contain(r => r.ErrorMessage.Contains("O valor do campo ClienteId da Venda deve ser maior que zero."));
+        results.Should().Contain(r => r.ErrorMessage.Contains("O valor do campo Cliente é obrigatório."));
     }
 
     

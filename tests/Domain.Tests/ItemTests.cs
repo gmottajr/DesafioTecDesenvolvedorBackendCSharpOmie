@@ -1,3 +1,4 @@
+using AutoFixture;
 using FluentAssertions;
 using Omie.Domain.Entities;
 
@@ -15,8 +16,8 @@ public class ItemTests
     [Fact]
     public void Item_Should_Have_Valid_ProdutoId()
     {
-        var item = new Item { ProdutoId = 10 };
-        item.ProdutoId.Should().BeGreaterThan(0, "Every item must be associated with a valid product (Produto).");
+        var item = new Item { Produto = "c" };
+        item.Produto.Should().NotBeNullOrEmpty("Every item must be associated with a valid product (Produto).");
     }
 
     [Fact]
@@ -29,14 +30,22 @@ public class ItemTests
     [Fact]
     public void Item_ValorTotal_Should_Be_Calculated_Correctly()
     {
-        var produto = new Produto
-        {
-            Valor = 50.0m,
-            Id = 1
-        };
-        var item = new Item { Produto = produto, Quantidade = 2, ValorTotal = produto.Valor * 2 };
+        
+        var produto = new Fixture().Create<string>();
+        var valorUnitario = new Fixture().Create<decimal>();
+        var quantidade = new Fixture().Create<short>();
 
-        item.ValorTotal.Should().Be(100.0m, "Total value should be quantity multiplied by product value.");
+        var item = new Item { 
+                    Produto = produto,
+                    ValorUnitario = valorUnitario,
+                    Quantidade = quantidade 
+                };
+
+        var expectedValorTotal = valorUnitario * quantidade;
+        item.ValorTotal.Should().Be(expectedValorTotal, "Total value should be quantity multiplied by product value.");
+        item.Produto.Should().Be(produto, "Produto property should be set.");
+        item.Quantidade.Should().Be(quantidade, "Quantidade property should be set.");
+        item.ValorUnitario.Should().Be(valorUnitario, "ValorUnitario property should be set.");
     }
 
     [Fact]

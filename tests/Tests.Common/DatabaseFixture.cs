@@ -1,50 +1,52 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoFixture;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 using Omie.Domain.Abstractions;
-using Omie.WebApi;
-using Xunit;
+using Tests.Common.Data;
+using Omie.Application.Models.Abstractions;
+using Omie.Domain.Entities;
+using System.Reflection;
+using AutoFixture.Dsl; // Add this line if ResourceDtoBase is in Omie.Domain.Dtos namespace
+
 
 namespace Tests.Common.Fixtures;
 
-public class DatabaseFixture<TDbContext, TControllerForAssemblyRef> : IDisposable where TDbContext : DbContext where TControllerForAssemblyRef : ControllerBase
+public class DatabaseFixture<TEntity, TDbContext> : IDisposable where TDbContext : DbContext where TEntity : EntityBase
 {
     public TDbContext Context { get; private set; }
-    private Random _random = new Random();
+    private readonly Random _random = new();
+    private bool _workInMemory = true;
+
     public DatabaseFixture()
     {
-        var config = TestUtilities.LoadConfiguration<TControllerForAssemblyRef>();
-        var connStr = config.GetConnectionString("TestDbConnectionString") ?? throw new InvalidOperationException("Connection string not found");
-        var connectionString = string.Format(connStr, typeof(TControllerForAssemblyRef).Name.Substring(0, typeof(TControllerForAssemblyRef).Name.IndexOf("Controller")));
-        var options = new DbContextOptionsBuilder<TDbContext>()
-            .UseSqlServer(connectionString)
-            .Options;
-        Context = (TDbContext)Activator.CreateInstance(typeof(TDbContext), options);
-        // Ensure the database is clean before running tests
-        Context?.Database.EnsureDeleted();
-        Context?.Database.Migrate(); // Apply migrations
+        if (_workInMemory) 
+        {
+            Context = TestData.CreateInMemoryDbContext<TDbContext>();
+        } else 
+        {
+            Context = TestData.CreateSQlServerTestDbContext<TDbContext, TEntity>();
+        }
+
+        SetupDataContextSqlServer();
     }
-    
-    /// Static method to create a TDbContext instance with an in-memory database and apply migrations
-    public static TDbContext CreateInMemoryDbContext()
+
+    public void SetWorkWithSqlServer()
     {
-        var options = new DbContextOptionsBuilder<TDbContext>()
-            .UseInMemoryDatabase("InMemoryTestDb") 
-            .Options;
-
-        var context = (TDbContext)Activator.CreateInstance(typeof(TDbContext), options);
-
-        // Apply migrations to the in-memory database
-        context?.Database.Migrate(); 
-
-        return context;
+        _workInMemory = false;
+        Context = TestData.CreateSQlServerTestDbContext<TDbContext, TEntity>();
+        SetupDataContextSqlServer();
     }
-    
-    public void SeedData<TKey>(List<EntityBaseRoot<TKey>> entities)
+
+    private void SetupDataContextSqlServer()
+    {
+        if (Context.Database.IsInMemory())
+            return;
+        
+        // Ensure the database is clean before running tests
+        Context.Database.EnsureDeleted();
+        Context.Database.Migrate(); // Apply migrations
+    }
+
+    public void SeedData<TKey>(List<TEntity> entities)
     {
         foreach (var entity in entities)
         {
@@ -59,179 +61,137 @@ public class DatabaseFixture<TDbContext, TControllerForAssemblyRef> : IDisposabl
         Context.SaveChanges();
     }
 
-    public List<TEntity> GetEntities<TEntity>(int howMany, bool ignoreNulldef) where TEntity : EntityBase
+    public List<T> GetEntities<T>(int howMany, bool ignoreNulldef) where T : EntityBase
     {
-        var returnList = new List<TEntity>();
+        var returnList = new List<T>();
         for (int i = 0; i < howMany; i++)
         {
-            TEntity? entity = GetEntityFilled<TEntity>(ignoreNulldef, i);
+            T entity = GetEntityFilled<T>();
             returnList.Add(entity);
         }
 
         return returnList;
     }
 
-    public TEntity GetEntityFilled<TEntity>(bool ignoreNulldef, int i) where TEntity : EntityBase
+    public T GetEntityFilled<T>() where T : EntityBase
     {
-        var entity = (TEntity)Activator.CreateInstance(typeof(TEntity));
-        var model = Context.Model;
-        var entityType = model.FindEntityType(typeof(TEntity));
-
         
-        var properties = entity.GetType().GetProperties();
-        if (entityType != null)
+        var fixture = new Fixture();
+        var type = typeof(T);
+        var property = type.GetProperty("Id");
+        if (property != null)
         {
-            foreach (var prop in properties)
-            {
-                if (prop.PropertyType == typeof(string))
-                {
-                    string value = Guid.NewGuid().ToString().Replace("-", "");
-                    prop.SetValue(entity, value);
-                }
-                else if (Nullable.GetUnderlyingType(prop.PropertyType) == typeof(string))
-                {
-                if (!ignoreNulldef)
-                {
-                    prop.SetValue(entity, null);
-                }
-                else
-                {
-                    prop.SetValue(entity, Guid.NewGuid().ToString());
-                }
-                }
-                else if (prop.PropertyType == typeof(Guid))
-                {
-                prop.SetValue(entity, Guid.NewGuid());
-                }
-                else if (prop.PropertyType == typeof(Guid?))
-                {
-                if (!ignoreNulldef)
-                {
-                    prop.SetValue(entity, null);
-                }
-                else
-                {
-                    prop.SetValue(entity, Guid.NewGuid());
-                }
-                }
-                else if (prop.PropertyType.IsEnum)
-                {
-                prop.SetValue(entity, Enum.GetValues(prop.PropertyType).GetValue(0));
-                }
-                else if (Nullable.GetUnderlyingType(prop.PropertyType)?.IsEnum == true)
-                {
-                if (!ignoreNulldef)
-                {
-                    prop.SetValue(entity, null);
-                }
-                else
-                {
-                    prop.SetValue(entity, Enum.GetValues(Nullable.GetUnderlyingType(prop.PropertyType)).GetValue(0));
-                }
-                }
-                else if (prop.PropertyType == typeof(int))
-                {
-                    var value = _random.Next(1, 200);
-                    prop.SetValue(entity, value);
-                }
-                else if (prop.PropertyType == typeof(int?))
-                {
-                if (!ignoreNulldef)
-                {
-                    prop.SetValue(entity, null);
-                }
-                else
-                {
-                    var value = _random.Next(10, 3000);
-                    prop.SetValue(entity, value);;
-                }
-                }
-                else if (prop.PropertyType == typeof(long) && prop.Name != "Id")
-                {
-                    var value = _random.Next(1, 2000);
-                    prop.SetValue(entity, value);
-                }
-                else if (prop.PropertyType == typeof(long?))
-                {
-                if (!ignoreNulldef)
-                {
-                    prop.SetValue(entity, null);
-                }
-                else
-                {
-                    var value = _random.Next(1, 4000);
-                    prop.SetValue(entity, value);
-                }
-                }
-                else if (prop.PropertyType == typeof(decimal))
-                {
-                    var value = (decimal)_random.Next(0, 1000) + (decimal)_random.NextDouble();
-                    prop.SetValue(entity, value);
-                }
-                else if (prop.PropertyType == typeof(decimal?))
-                {
-                if (!ignoreNulldef)
-                {
-                    prop.SetValue(entity, null);
-                }
-                else
-                {
-                    var value = (decimal)_random.Next(0, 1000) + (decimal)_random.NextDouble();
-                    prop.SetValue(entity, value);
-                }
-                }
-                else if (prop.PropertyType == typeof(bool))
-                {
-                prop.SetValue(entity, true);
-                }
-                else if (prop.PropertyType == typeof(bool?))
-                {
-                if (!ignoreNulldef)
-                {
-                    prop.SetValue(entity, null);
-                }
-                else
-                {
-                    prop.SetValue(entity, true);
-                }
-                }
-                else if (prop.PropertyType == typeof(DateTime))
-                {
-                    prop.SetValue(entity, DateTime.Now);
-                }
-                else if (prop.PropertyType == typeof(DateTime?))
-                {
-                    if (!ignoreNulldef)
-                    {
-                        prop.SetValue(entity, null);
-                    }
-                    else
-                    {
-                        prop.SetValue(entity, DateTime.Now);
-                    }
-                }
-                else if (prop.PropertyType == typeof(EntityBase))
-                {
-                var nestedEntity = GetEntityFilled<EntityBase>(ignoreNulldef, i);
-                prop.SetValue(entity, nestedEntity);
-                }
-                else if (typeof(EntityBase).IsAssignableFrom(prop.PropertyType))
-                {
-                    var nestedEntity = (EntityBase)Activator.CreateInstance(prop.PropertyType);
-                    var method = typeof(DatabaseFixture<TDbContext, TControllerForAssemblyRef>).GetMethod(nameof(GetEntityFilled)).MakeGenericMethod(prop.PropertyType);
-                    nestedEntity = (EntityBase)method.Invoke(this, new object[] { ignoreNulldef, i });
-                    prop.SetValue(entity, nestedEntity);
-                }
-            }
-        
+            fixture.Customize<T>(c => c
+                .Without(x => ((EntityBaseRoot<long>)(object)x).Id)
+                );
         }
+        
+        return fixture.Create<T>();
+    }
+    
+    public List<Venda> GetVendas(int howMany)
+    {
+        var returnList = new List<Venda>();
+        for (int i = 0; i < howMany; i++)
+        {
+            var dataVenda = DateTime.Now.AddYears(-_random.Next(0, 5)).AddDays(-_random.Next(0, 30));
+            var nomeCliente = new Fixture().Create<string>();
+            var entity = new Venda
+            {
+                DataDaVenda = dataVenda, // Random date within the last 5 years and 30 days
+                Cliente = nomeCliente,
+                CodigoVenda = $"{dataVenda:yyyyMMddHHmmss}-{nomeCliente.Replace(" ", "-").ToUpper()}",
+                Itens = GetItensVenda(_random.Next(1, 10))
+            };
+            returnList.Add(entity);
+        }
+
+        return returnList;
+    }
+
+    public Cliente BuildCliente()
+    {
+        var fixture = new Fixture();
+        var entity = fixture.Build<Cliente>()
+            .With(c => c.Nome, $"Cliente Teste {Guid.NewGuid()}")
+            .With(c => c.CPF, GenerateCpf())
+            .With(c => c.Email, $"test@{Guid.NewGuid()}.com")
+            .With(c => c.Telefone, $"{_random.Next(10, 100)} {_random.Next(10, 100)} {_random.Next(10000, 100000)} {_random.Next(1000, 10000)}")
+            .With(c => c.Endereco, new Endereco
+            {
+            Logradouro = "Rua Teste",
+            Numero = "123",
+            Bairro = "Bairro Teste",
+            Cidade = "Cidade Teste",
+            Estado = "SP",
+            CEP = "12345678"
+            })
+            .With(c => c.Observacao, $"Observacao Teste {Guid.NewGuid()}")
+            .Create();
+
         return entity;
     }
 
+    public string GenerateCpf()
+    {
+        var random = new Random();
+        var n = 9;
+        var n1 = random.Next(0, n);
+        var n2 = random.Next(0, n);
+        var n3 = random.Next(0, n);
+        var n4 = random.Next(0, n);
+        var n5 = random.Next(0, n);
+        var n6 = random.Next(0, n);
+        var n7 = random.Next(0, n);
+        var n8 = random.Next(0, n);
+        var n9 = random.Next(0, n);
+        var d1 = n9 * 2 + n8 * 3 + n7 * 4 + n6 * 5 + n5 * 6 + n4 * 7 + n3 * 8 + n2 * 9 + n1 * 10;
+        d1 = 11 - (d1 % 11);
+        if (d1 >= 10) d1 = 0;
+        var d2 = d1 * 2 + n9 * 3 + n8 * 4 + n7 * 5 + n6 * 6 + n5 * 7 + n4 * 8 + n3 * 9 + n2 * 10 + n1 * 11;
+        d2 = 11 - (d2 % 11);
+        if (d2 >= 10) d2 = 0;
+        return $"{n1}{n2}{n3}.{n4}{n5}{n6}.{n7}{n8}{n9}-{d1}{d2}";
+    }
+
+    public List<Item> GetItensVenda(int howMany)
+    {
+        var returnList = new List<Item>();
+        for (int i = 0; i < howMany; i++)
+        {
+            var entity = new Item
+            {
+                Produto = new Fixture().Create<string>(),
+                ValorUnitario = new Fixture().Create<decimal>(),
+                Quantidade = (short)_random.Next(1, 10)
+            };
+            returnList.Add(entity);
+        }
+
+        return returnList;
+    }
+    
+    public Produto BuildProduto()
+    {
+        var fixture = new Fixture();
+        var entity = fixture.Build<Produto>()
+            .With(p => p.Nome, $"Produto Teste {Guid.NewGuid()}")
+            .With(p => p.Descricao, $"Descricao Teste {Guid.NewGuid()} - {Guid.NewGuid()} | {Guid.NewGuid()}")
+            .With(p => p.Valor, Convert.ToDecimal(_random.NextDouble() * 100))
+            .With(p => p.Imagem, $"https://mywebsite.com/image_{Guid.NewGuid()}.jpg")
+            .With(p => p.Categoria, $"Categoria Teste {Guid.NewGuid()}")
+            .With(p => p.Marca, $"Marca Teste {Guid.NewGuid()}")
+            .With(p => p.Unidade, new string(Enumerable.Range(0, 2).Select(_ => (char)_random.Next('A', 'Z' + 1)).ToArray()))
+            .With(p => p.Tipo, $"Tipo Teste {Guid.NewGuid()}")
+            .With(p => p.Codigo, Guid.NewGuid().ToString().Substring(0, 12))
+            .Create();
+    
+        return entity;
+    }
     public void Dispose()
     {
         Context?.Dispose();
+        GC.SuppressFinalize(this);
     }
-}   
-
+}
 

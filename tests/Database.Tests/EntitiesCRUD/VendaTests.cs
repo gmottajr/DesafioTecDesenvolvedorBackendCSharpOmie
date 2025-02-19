@@ -1,22 +1,26 @@
-﻿using FluentAssertions;
+﻿using AutoFixture;
+using FluentAssertions;
+using Omie.Application.Models;
 using Omie.DAL;
 using Omie.Domain.Entities;
 using Omie.WebApi;
 using Tests.Common.Data;
 using Tests.Common.Fixtures;
+using Xunit;
 
 namespace Database.Tests;
-public class VendaTests : IClassFixture<DatabaseFixture<DbContextOmie, ClienteController>>
+public class VendaTests : IClassFixture<DatabaseFixture<Venda, DbContextOmie>>
 {
-    private readonly DatabaseFixture<DbContextOmie, ClienteController> _fixture;
+    private readonly DatabaseFixture<Venda, DbContextOmie> _fixture;
     private readonly IVendaRepository _vendaRepository;
     private readonly ClienteRepository _clienteRepository;
 
-    public VendaTests(DatabaseFixture<DbContextOmie, ClienteController> fixture)
+    public VendaTests(DatabaseFixture<Venda, DbContextOmie> fixture)
     {
         _fixture = fixture;
-        _vendaRepository = new VendaRepository(_fixture.Context);
-        _clienteRepository = new ClienteRepository(_fixture.Context);
+        _fixture.SetWorkWithSqlServer();
+        _vendaRepository = new VendaRepository((DbContextOmie)_fixture.Context);
+        _clienteRepository = new ClienteRepository((DbContextOmie)_fixture.Context);
     }
 
     [Fact]
@@ -29,7 +33,7 @@ public class VendaTests : IClassFixture<DatabaseFixture<DbContextOmie, ClienteCo
             retrievedVenda.Should().NotBeNull();
             retrievedVenda.CodigoVenda.Should().Be(venda.CodigoVenda);
             retrievedVenda.Id.Should().Be(venda.Id);
-            retrievedVenda.ClienteId.Should().Be(venda.ClienteId);
+            retrievedVenda.Cliente.Should().Be(venda.Cliente);
             retrievedVenda.DataDaVenda.Should().Be(venda.DataDaVenda);
         }
     }
@@ -37,11 +41,11 @@ public class VendaTests : IClassFixture<DatabaseFixture<DbContextOmie, ClienteCo
     private async Task<Venda> AddOneVenda()
     {
         var vendas = TestData.GetVendas(_fixture, 1);
-        var cliente = await AddOneClient();
+        var cliente = new Fixture().Create<string>();
         foreach (var venda in vendas)
         {
             venda.Cliente = null;
-            venda.ClienteId = cliente.Id;
+            venda.Cliente = cliente;
             venda.CodigoVenda = venda.CodigoVenda.Substring(0, 12);
             venda.DataDaVenda = DateTime.Now;
             await _vendaRepository.AddAsync(venda);
@@ -85,7 +89,7 @@ public class VendaTests : IClassFixture<DatabaseFixture<DbContextOmie, ClienteCo
 
     private async Task<Cliente> AddOneClient()
     {
-        var cliente = TestData.GetCliente(_fixture);
+        var cliente = TestData.GetCliente(new DatabaseFixture<Cliente, DbContextOmie>());
         cliente.CPF = cliente.CPF.Substring(0,11);
         cliente.Email = $"{cliente.Email.Substring(0,10)}@teste{cliente.Email.Substring(10,4)}.com";
         cliente.Telefone = cliente.Telefone.Substring(0,11);

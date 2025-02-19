@@ -15,7 +15,7 @@ public class ConfigurationLoaderTests
     public void LoadConfiguration_ShouldReturnValidConfiguration()
     {
         // Act: Call the method to load the configuration
-        var configuration = TestUtilities.LoadConfiguration<VendaController>();
+        var configuration = TestUtilities.LoadConfiguration();
 
         // Assert: Validate the behavior of the method
         Assert.NotNull(configuration); // Ensure the configuration is not null
@@ -29,7 +29,7 @@ public class ConfigurationLoaderTests
         var keyToCheck = "Logging:LogLevel:Default";        
 
         // Act: Call the method to load the configuration
-        var configuration = TestUtilities.LoadConfiguration<VendaController>();
+        var configuration = TestUtilities.LoadConfiguration();
 
         // Assert: Check if the key exists in the configuration
         var keyValue = configuration.GetValue<string>(keyToCheck);
