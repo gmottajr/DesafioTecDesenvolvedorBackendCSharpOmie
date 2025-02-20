@@ -1,28 +1,16 @@
-
 services:
-  api:
-    build: .
-    container_name: webapi_container
-    ports:
-      - "8080:8080"
-    depends_on:
-      - sqlserver
-    environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=OmieDb;User Id=sa;Password=My#Stron8P4ssw0rd;TrustServerCertificate=True;
-    networks:
-      - minha-rede
-
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver_container
+    container_name: omie_sqlserver
     ports:
       - "1433:1433"
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=My#Stron8P4ssw0rd
-    networks:
-      - minha-rede
+      - MSSQL_PID=Express  # Use 'Express' for free edition, or 'Developer' for development
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    restart: unless-stopped
 
-networks:
-  minha-rede:
-    driver: bridge
+volumes:
+  sqlserver_data:
