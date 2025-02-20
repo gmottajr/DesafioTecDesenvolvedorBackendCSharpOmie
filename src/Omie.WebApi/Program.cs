@@ -8,8 +8,8 @@ namespace Omie.WebApi;
 
 public static class Program
 {
-    private const string ClientidJwtSettginConst = "OmieJwt:ClientId";
-    private const string AuthUrlJwtSettingConst = "OmieJwt:AuthUrl";
+    private const string ClientidJwtSettginConst = "OmieJwt:Audience";
+    private const string AuthUrlJwtSettingConst = "OmieJwt:Issuer";
     private const string ClientsecretJwtSettingConst = "OmieJwt:ClientSecret";
     private const string ApikeyJwtConst = "OmieJwt:ApiKey";
     public static void Main(string[] args)
@@ -31,7 +31,7 @@ public static class Program
 
         // Add services to the container
         builder.Services.AddControllers();
-
+        
         builder.Services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo { 
                 Title = "Omie Vendas - WebApi", 
@@ -43,51 +43,47 @@ public static class Program
                     Url = new Uri("https://www.Omie.com")
                 }
                 });
+            
+            // Define the BearerAuth scheme that's in use (JWT)
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = @"<h3  class='text-info'>JWT Authorization header usando o esquema Bearer.</h3> <br>
+                      <br> Digite 'Bearer' <strong>[espaço]</strong> e, em seguida, seu token no campo de texto abaixo.  
+                      <br>Exemplo: <div class='opblock-summary-method'>Bearer 12345abcdef</div> 
+                      <strong>Obtenha seu token na API:<strong> <a href='http://localhost:5030'>OmieAuthentication.WebApi</a>",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer"
+            });
+            
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                    },
+                    new List<string>()
+                }
+            });
         });
         
         // Faking JWT Authentication using API Key
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
+        builder.Services.AddAuthentication(options =>
         {
-            // Use the Authorization header, and validate it like a JWT token (using API key in this case)
-            
-            options.Events = new JwtBearerEvents
-            {
-                OnMessageReceived = context =>
-                {
-                    // Get the "Bearer token" from the Authorization header (this could be your API key instead of a JWT token)
-                    var apiKey = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
-                    // Check if the API key is valid
-                    if (string.IsNullOrEmpty(apiKey) || apiKey != builder.Configuration[ApikeyJwtConst])
-                    {
-                        context.Fail("Unauthorized");
-                    }
-
-                    // Proceed with the request if API key is valid
-                    return Task.CompletedTask;
-                },
-                OnTokenValidated = context =>
-                {
-                    // Check if the token matches the expected Issuer, Audience, and SigningKey from the config
-                    var apiKey = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
-                    if (apiKey != builder.Configuration[ApikeyJwtConst])
-                    {
-                        context.Fail("Invalid API Key");
-                    }
-
-                    // Validate if the Issuer and Audience from the configuration match the expected values (even if we're using an API Key)
-                    if (context.Principal?.FindFirst("iss")?.Value != builder.Configuration[AuthUrlJwtSettingConst] ||
-                        context.Principal?.Claims.FirstOrDefault(c => c.Type == "aud")?.Value != builder.Configuration[ClientidJwtSettginConst])
-                    {
-                        context.Fail("Invalid Issuer or Audience");
-                    }
-
-                    return Task.CompletedTask;
-                }
-            };
-
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+        {
             // Lets apply token validation parameters as well (even though I'm faking it with an API key)
             options.TokenValidationParameters = new TokenValidationParameters
             {
@@ -95,8 +91,6 @@ public static class Program
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-
-                // I'm using this configuration just to proove familiarity with this setup
                 ValidIssuer = builder.Configuration[AuthUrlJwtSettingConst], // Validate the Issuer
                 ValidAudience = builder.Configuration[ClientidJwtSettginConst], // Validate the Audience
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration[ClientsecretJwtSettingConst])) // Validate Signing Key

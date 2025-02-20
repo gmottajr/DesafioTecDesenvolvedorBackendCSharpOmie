@@ -51,6 +51,10 @@ public static class IoCRegisterDiServicesHandler
         // Register Configuration from appsettings.json and user-secrets.json
         public static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
         {
+            var omieJwtSection = configuration.GetSection("OmieJwt");
+            var jwtConfig = omieJwtSection.Get<JwtConfigDto>();
+            //Console.WriteLine($"JWT Config: {Newtonsoft.Json.JsonConvert.SerializeObject(jwtConfig)}");
+            
             services.Configure<JwtConfigDto>(configuration.GetSection("OmieJwt"));
             return services;
         }

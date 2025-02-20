@@ -2,9 +2,9 @@ using Omie.Application.Models.Abstractions;
 
 namespace Omie.Application.Models;
 
-public record JwtConfigDto : IResourceDtoBase
+public class JwtConfigDto : IResourceDtoBase
 {
-    public string AuthUrl { get; }
-    public string ClientId { get; }
-    public string ClientSecret { get; }
+    public string Issuer { get; set; } = string.Empty;
+    public string Audience { get; set; } = string.Empty;
+    public string ClientSecret { get; set; } = string.Empty;
 }

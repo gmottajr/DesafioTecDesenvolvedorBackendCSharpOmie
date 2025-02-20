@@ -13,7 +13,7 @@ public static class Program
         builder.Configuration
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddUserSecrets<VendaController>()
+            .AddUserSecrets<ProdutoController>()
             .AddEnvironmentVariables();
 
         builder.Services.DbContextDiRegistration(builder.Configuration);
@@ -27,9 +27,9 @@ public static class Program
 
         builder.Services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo { 
-                Title = "Omie Vendas - WebApi", 
+                Title = "Omie Produtos - WebApi", 
                 Version = "v1",
-                Description = "Omie Vendas - WebApi",
+                Description = "Omie Produtos - WebApi",
                 Contact = new OpenApiContact {
                     Name = "Gerson Jr",
                     Email = "contact@Omie.com",
@@ -44,7 +44,7 @@ public static class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Omie Vendas - WebApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Omie Produtos - WebApi");
                 c.RoutePrefix = string.Empty;
             });
         }

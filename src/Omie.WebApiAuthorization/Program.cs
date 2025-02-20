@@ -15,12 +15,16 @@ public static class Program
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .AddEnvironmentVariables();
 
+        builder.Services.DbContextDiRegistration(builder.Configuration);
         builder.Services.AddApplicationServices();
+        builder.Services.DataRepositoriesDiRegistration();
         builder.Services.AddConfigurationSettings(builder.Configuration);
+        builder.Services.ConfigAddMapster();
 
         // Add services to the container
         builder.Services.AddControllers();
-
+        var omieJwtSection = builder.Configuration.GetSection("OmieJwt");
+        
         builder.Services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo { 
                 Title = "Omie Authenticating - WebApi", 
