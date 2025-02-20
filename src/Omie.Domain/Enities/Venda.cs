@@ -1,4 +1,6 @@
-﻿using Omie.Domain.Abstractions;
+﻿
+
+using Omie.Common.Abstractions.Domain.Models;
 
 namespace Omie.Domain.Entities;
 

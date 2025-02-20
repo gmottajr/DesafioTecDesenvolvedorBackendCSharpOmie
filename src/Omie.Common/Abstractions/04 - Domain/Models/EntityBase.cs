@@ -1,4 +1,4 @@
-﻿namespace Omie.Domain.Abstractions;
+﻿namespace Omie.Common.Abstractions.Domain.Models;
 
 public abstract class EntityBase
 {

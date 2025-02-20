@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Omie.Domain.Abstractions;
-using Omie.Domain.enums;
+using Omie.Common.Abstractions.Domain.Models;
+
 
 namespace Omie.Domain.Entities;
 
