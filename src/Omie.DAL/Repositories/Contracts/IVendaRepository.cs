@@ -6,5 +6,5 @@ namespace Omie.DAL;
 
 public interface IVendaRepository : IDataRepositoryBase<Venda, long>
 {
-    Task<Produto> GetProdutoByIdAsync(long produtoId);
+    
 }

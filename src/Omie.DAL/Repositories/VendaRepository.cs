@@ -1,4 +1,5 @@
-﻿using Omie.DAL.Abstractions;
+﻿using System.Linq.Expressions;
+using Omie.DAL.Abstractions;
 using Omie.Domain;
 using Microsoft.EntityFrameworkCore;
 using Omie.Domain.Entities;
@@ -11,13 +12,33 @@ public class VendaRepository : DataRepositoryBase<Venda, long>, IVendaRepository
     {
     }
 
-    public async Task<Produto> GetProdutoByIdAsync(long produtoId)
+    public override async Task<Venda?> GetByIdAsync(long id)
     {
-        var produto = await ((DbContextOmie)_context).Produtos.FindAsync(produtoId);
-        if (produto == null)
+        var venda = (await _context.Set<Venda>()
+            .AsNoTracking()
+            .Include(v => v.Itens)
+            .FirstOrDefaultAsync(v => v.Id == id));
+        return venda;
+    }
+
+    public override async Task<IEnumerable<Venda>> GetAllAsync()
+    {
+        var vendas = await _context.Set<Venda>()
+            .AsNoTracking()
+            .Include(v => v.Itens)
+            .ToListAsync();
+        return vendas;
+    }
+
+    public override async Task<IEnumerable<Venda>> GetAllAsync(Expression<Func<Venda, bool>>? filter = null)
+    {
+        IQueryable<Venda> query = _dbSet;
+
+        if (filter != null)
         {
-            throw new KeyNotFoundException($"Erro: Produto  ID {produtoId} não enconrado.");
+            query = query.Where(filter);
         }
-        return produto;
+
+        return await query.Include(v => v.Itens).ToListAsync();
     }
 }

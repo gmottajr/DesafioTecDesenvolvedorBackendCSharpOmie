@@ -7,6 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Mapster;
 using MapsterMapper;
+using Omie.Application.Authenticating;
+using Omie.Application.Models; // Ensure this namespace contains JwtConfigDto
+using Omie.Application.Services.Authenticating;
+using Omie.Application.Models;
 
 namespace Omie.IoC;
 
@@ -31,6 +35,7 @@ public static class IoCRegisterDiServicesHandler
             services.AddScoped<IClienteAppService, ClienteAppService>();
             services.AddScoped<IProdutoAppService, ProdutoAppService>();
             services.AddScoped<IVendaAppService, VendaAppService>();
+            services.AddScoped<IAuthenticatingService, AuthenticatingService>();
             return services;
         }
 
@@ -46,7 +51,7 @@ public static class IoCRegisterDiServicesHandler
         // Register Configuration from appsettings.json and user-secrets.json
         public static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
+            services.Configure<JwtConfigDto>(configuration.GetSection("OmieJwt"));
             return services;
         }
 
