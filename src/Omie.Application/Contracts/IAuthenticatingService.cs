@@ -1,5 +1,3 @@
-using Omie.Application.Models;
-
 namespace Omie.Application.Authenticating;
 
 public interface IAuthenticatingService

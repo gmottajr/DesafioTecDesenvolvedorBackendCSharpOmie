@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Omie.Application.Models.Abstractions;
+using Omie.Common.Abstractions.Application.Models;
 
 namespace Omie.Application.Models;
 

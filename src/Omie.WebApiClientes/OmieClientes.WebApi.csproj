@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Omie.application\Omie.application.csproj" />
     <ProjectReference Include="..\Omie.Ioc\Omie.IoC.csproj" />
+    <ProjectReference Include="..\Omie.WebApiProdutos\OmieProdutos.WebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

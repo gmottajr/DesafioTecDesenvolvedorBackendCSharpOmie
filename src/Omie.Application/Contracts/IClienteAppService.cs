@@ -1,4 +1,5 @@
 ﻿using Omie.Application.Models;
+using Omie.Common.Abstractions.Application.Services;
 
 
 namespace Omie.Application;

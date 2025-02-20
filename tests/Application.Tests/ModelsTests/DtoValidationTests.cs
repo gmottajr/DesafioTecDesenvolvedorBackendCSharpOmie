@@ -1,13 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using FakeItEasy;
 using FluentAssertions;
-using Xunit;
 using Omie.Application.Models;
-using Omie.Application.Models.Abstractions;
 using AutoFixture;
+using Omie.Common.Abstractions.Application.Models;
 
 
 namespace Application.Tests.Models;

@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
-using Omie.DAL.Abstractions;
-using Omie.Domain;
 using Microsoft.EntityFrameworkCore;
+using Omie.Common.Abstractions.DAL.Reposotories;
 using Omie.Domain.Entities;
 
 namespace Omie.DAL;

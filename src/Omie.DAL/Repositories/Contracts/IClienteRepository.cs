@@ -1,5 +1,5 @@
-﻿using Omie.DAL.Abstractions;
-using Omie.Domain;
+﻿
+using Omie.Common.Abstractions.DAL.Reposotories;
 using Omie.Domain.Entities;
 
 namespace Omie.DAL;
