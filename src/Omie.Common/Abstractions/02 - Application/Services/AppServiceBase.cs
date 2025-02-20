@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using MapsterMapper;
 using Omie.Common.Abstractions.Application.Models;
 using Omie.Common.Abstractions.DAL.Reposotories;

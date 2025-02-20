@@ -1,4 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Omie.Common.Abstractions.DAL.Reposotories;
 
@@ -19,7 +22,7 @@ namespace Omie.Common.Abstractions.DAL.Reposotories;
         /// Asynchronously retrieves a collection of entities from the database.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity to retrieve.</typeparam>
-        /// <param name="filter">An optional expression used to filter the entities. If provided, only entities that match the filter will be returned. The expression is applied as a <see cref="Func{TEntity, bool}"/> where <typeparamref name="TEntity"/> represents the entity type. If no filter is specified, all entities of the given type will be returned.</param>
+        /// <param name="filter">An optional expression used to filter the entities. If provided, only entities that match the filter will be returned. The expression is applied as a <see cref="Func{TResult}"/> where <typeparamref name="TEntity"/> represents the entity type. If no filter is specified, all entities of the given type will be returned.</param>
         /// <returns>A task that represents the asynchronous operation. The task result is an <see cref="IEnumerable{TEntity}"/> containing the retrieved entities.</returns>
         /// <remarks>
         /// This method allows for the retrieval of entities from the database with an optional filter applied dynamically via a LINQ expression. 
