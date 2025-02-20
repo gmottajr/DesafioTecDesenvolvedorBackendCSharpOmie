@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>59ed3b77-dbf2-4b67-aa76-0004669fa578</UserSecretsId>
+    <RootNamespace>OmieAuthorization.WebApi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
