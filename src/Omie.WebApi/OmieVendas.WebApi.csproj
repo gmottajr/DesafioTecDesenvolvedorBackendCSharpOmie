@@ -23,6 +23,8 @@
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
   </ItemGroup>
-
+  <Target Name="StartDockerCompose" BeforeTargets="Build">
+    <Exec Command="docker compose up -d" WorkingDirectory="$(MSBuildProjectDirectory)/../" />
+  </Target> 
 </Project>
 
