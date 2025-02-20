@@ -1,11 +1,8 @@
 ﻿using AutoFixture;
 using Microsoft.EntityFrameworkCore;
-using Omie.Domain.Abstractions;
+using Omie.Common.Abstractions.Domain.Models;
 using Tests.Common.Data;
-using Omie.Application.Models.Abstractions;
 using Omie.Domain.Entities;
-using System.Reflection;
-using AutoFixture.Dsl; // Add this line if ResourceDtoBase is in Omie.Domain.Dtos namespace
 
 
 namespace Tests.Common.Fixtures;

@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 using Tests.Common.Fixtures;
-using Omie.Domain.Abstractions;
 using Tests.Common.Data;
 using Omie.Domain.Entities;
 using Omie.DAL;
 using FluentAssertions;
-using System.Reflection;
 using Microsoft.Extensions.Configuration;
 
 namespace Tests.Common;

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using FluentAssertions;
-using Omie.Domain.Abstractions;
+using Omie.Common.Abstractions.Domain.Models;
 using Omie.Domain.Entities;
 
 namespace Domain.Tests;

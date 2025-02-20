@@ -1,8 +1,7 @@
 ﻿using Omie.DAL.Abstractions;
-using Omie.Domain.Abstractions;
-using Mapster;
 using MapsterMapper;
 using Omie.Application.Models.Abstractions;
+using Omie.Common.Abstractions.Domain.Models;
 
 namespace Omie.Application;
 

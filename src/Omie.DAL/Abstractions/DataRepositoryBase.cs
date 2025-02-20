@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
-using Omie.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Omie.Common.Abstractions.Domain.Models;
 
 namespace Omie.DAL.Abstractions;
 

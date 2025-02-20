@@ -55,7 +55,7 @@ public abstract class OmieVendasBaseController<TDto, TInsertingDto, TKey> : Cont
 
     [HttpPut]
     public virtual async Task<IActionResult> Update([FromBody] TDto dto)
-    {
+    { 
         if (dto == null) return BadRequest();
 
         try

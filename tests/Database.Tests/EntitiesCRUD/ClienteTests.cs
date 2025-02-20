@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
-using Omie.Application.Models;
 using Omie.DAL;
 using Omie.Domain.Entities;
-using Omie.WebApi;
 using Tests.Common.Data;
 using Tests.Common.Fixtures;
 

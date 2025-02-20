@@ -1,7 +1,4 @@
-﻿using Omie.Application.Models;
-using Omie.Domain.Abstractions;
-using Omie.DAL.Abstractions;
-using Omie.Application.Models.Abstractions;
+﻿using Omie.Application.Models.Abstractions;
 
 namespace Omie.Application;
 

@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tests.Common.Fixtures;
-using Omie.Domain.Abstractions;
 using Omie.Domain.Entities;
-using Omie.Application.Models.Abstractions;
 using Microsoft.Extensions.Configuration;
+using Omie.Common.Abstractions.Domain.Models;
 using Omie.DAL;
 
 namespace Tests.Common.Data;

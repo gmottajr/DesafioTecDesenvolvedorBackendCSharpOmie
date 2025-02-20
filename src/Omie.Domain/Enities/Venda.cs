@@ -14,3 +14,4 @@ public class Venda : EntityBaseRoot<long>
     public DateTime? CancelledAt { get; set; }
     public List<Item>? Itens { get; set; } = new List<Item>();
 }
+
