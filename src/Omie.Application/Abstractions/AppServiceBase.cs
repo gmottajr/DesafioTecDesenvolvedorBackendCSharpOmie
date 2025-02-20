@@ -40,6 +40,7 @@ public class AppServiceBase<TDto, TDtoInserting, TEntity, TKey> : IAppServiceBas
     {
         var domain = _mapper.Map<TEntity>(dto);
         _repository.Update(domain);
+        await _repository.SaveChangesAsync();
         var updated = await _repository.GetByIdAsync(domain.Id);
         return _mapper.Map<TDto>(updated);
     }   

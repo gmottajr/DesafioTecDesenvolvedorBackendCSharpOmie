@@ -21,7 +21,7 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
         _dbSet = _context.Set<TEntity>() ?? throw new InvalidOperationException("DbSet could not be initialized.");
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
         try
         {
@@ -34,7 +34,7 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
         }
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null)
+    public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null)
     {
         IQueryable<TEntity> query = _dbSet;
 
@@ -51,7 +51,7 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
     /// </summary>
     /// <param name="id">The unique identifier of the entity.</param>
     /// <returns>The entity, if found; otherwise, null.</returns>
-    public async Task<TEntity?> GetByIdAsync(TKey id)
+    public virtual async Task<TEntity?> GetByIdAsync(TKey id)
     {
         if (id == null)
             throw new ArgumentNullException(nameof(id), "The ID cannot be null.");
@@ -71,7 +71,7 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
     /// Adds a new entity to the repository.
     /// </summary>
     /// <param name="entity">The entity to add.</param>
-    public async Task AddAsync(TEntity entity)
+    public virtual async Task AddAsync(TEntity entity)
     {
         if (entity == null)
             throw new ArgumentNullException(nameof(entity), "The entity cannot be null.");
@@ -91,7 +91,7 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
     /// Updates an existing entity in the repository.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
-    public void Update(TEntity entity)
+    public virtual void Update(TEntity entity)
     {
         if (entity == null)
             throw new ArgumentNullException(nameof(entity), "The entity cannot be null.");
@@ -111,7 +111,7 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
     /// Deletes an entity from the repository by its unique identifier.
     /// </summary>
     /// <param name="id">The unique identifier of the entity to delete.</param>
-    public async Task DeleteAsync(TKey id)
+    public virtual async Task DeleteAsync(TKey id)
     {
         if (id == null)
             throw new ArgumentNullException(nameof(id), "The ID cannot be null.");
@@ -134,7 +134,7 @@ public class DataRepositoryBase<TEntity, TKey> : IDataRepositoryBase<TEntity, TK
     /// <summary>
     /// Saves all changes made in the context to the database.
     /// </summary>
-    public async Task SaveChangesAsync()
+    public virtual async Task SaveChangesAsync()
     {
         try
         {
