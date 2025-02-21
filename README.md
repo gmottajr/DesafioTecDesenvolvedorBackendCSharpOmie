@@ -15,113 +15,103 @@ Antes de começar, certifique-se de ter os seguintes requisitos instalados:
 
 ## Configuração e Inicialização dos Contêineres
 
-### Passo 1: Suba os contêineres com Docker Compose:
+###   Execução Automatizada: 
+  - O projeto está **configurado** para iniciar **automaticamente** o SQL Server via Docker Compose toda vez que uma Web API é buildada. 
+  - No projeto OmieVendas.WebApi, a seguinte configuração foi adicionada ao arquivo OmieVendas.WebApi.csproj para garantir essa integração:
 
-####        1.1 (Opcional) Parar e remover contêineres antigos (caso existam conflitos)
-```bash
-docker-compose down
+```xml
+  <Target Name="StartDockerCompose" BeforeTargets="Build">
+    <Exec Command="docker compose up -d" WorkingDirectory="$(MSBuildProjectDirectory)/../" />
+  </Target>
 ```
+### Caseja nessário fazer manualmente
 
-ou, se estiver rodando diretamente:
-```bash
-docker stop sqlserver_container
-docker rm -f sqlserver_container
-```
+- #### Passo 1: Suba os contêineres com Docker Compose:
 
-####        1.2 Iniciar os contêineres com Docker Compose (mais recomendado)
-```bash
-docker-compose up -d
-```
+  - #####        1.1 (Opcional) Parar e remover contêineres antigos (caso existam conflitos)
+    ```bash
+    docker-compose down
+    ```
 
-####        Esse comando iniciará os serviços em segundo plano.
-Verifique se os contêineres estão rodando:
-```bash
-docker ps
-```
-Você deverá ver os contêineres webapi_container e sqlserver_container em execução.
+    ou, se estiver rodando diretamente:
+      ```bash
+        docker stop sqlserver_container
+        docker rm -f sqlserver_container
+      ```
 
-### Passo 2: Iniciar o SQL Server no Docker
-Execute o seguinte comando para criar e iniciar um container do SQL Server 2022:
+  - ####        1.2 Para Iniciar os contêineres com Docker Compose 
 
-####    Para Linux/macOS (Usando Barra Invertida para Quebra de Linha)
-```sh
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=My#Stron8P4ssw0rd" \
-  -p 1433:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
-```
-    Certifique-se de que não há espaços após a \ no final da linha.
+    ```bash
+    docker-compose up -d
+    
+    ```
 
-####    Para Windows PowerShell
-```powershell
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=My#Stron8P4ssw0rd" `
-  -p 1433:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
-```
-    No PowerShell, use o acento grave (`) em vez da barra invertida '\' para comandos em várias linhas.
-
-####    Para Windows CMD (Rodar em uma Linha Única)
-```cmd
-docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=My#Stron8P4ssw0rd" -p 1433:1433 --name sqlserver_container -d mcr.microsoft.com/mssql/server:2022-latest
-```
-O CMD do Windows não suporta comandos multi-linhas com \, então rode tudo em uma única linha.
-
-#####           Conflito com um Contêiner Existente:
-Se aparecer um erro dizendo que o nome sqlserver_container já está em uso, remova o contêiner antigo antes de criar um novo:
-
-```cmd    
-docker rm -f sqlserver_container
-```
+  - ####        Esse comando iniciará os serviços em segundo plano.
+    Verifique se os contêineres estão rodando:
+    ```bash
+    docker ps
+    ```
+    Você deverá ver os contêineres webapi_container e sqlserver_container em execução.
 
 #### Observações:
-    - A senha (SA_PASSWORD) deve ser a mesma que vc definir no docker-compose.yml.
+  - A senha (SA_PASSWORD) deve ser a mesma que vc definir no docker-compose.yml.
     O container irá rodar o SQL Server na porta 1433 do seu computador.
     Para verificar se o container está em execução:
 
-```bash
-docker ps
-```
-Se o container estiver parado, reinicie-o com:
+    ```bash
+    docker ps
+    ```
+    Se o container estiver parado, reinicie-o com:
 
-```bash
-docker start sqlserver_container
-```
+    ```bash
+    docker start sqlserver_container
+    ```
+    
+    Para verificar os logs do SQL Server no Docker:
 
-Para verificar os logs do SQL Server no Docker:
-
-```bash
-docker logs sqlserver_container
-```
+    ```bash
+    docker logs sqlserver_container
+    ```
 
 ### Passo 3: Configurar a String de Conexão
 
 Modifique o arquivo appsettings.json (ou appsettings.Development.json) do seu projeto para conectar-se ao SQL Server no Docker:
 Por exemplo, eu defini o appsetting corrente como:
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=sqlserver,1433;Database=OmieDb;User Id=sa;Password=My#Stron8P4ssw0rd;TrustServerCertificate=True;"
-}
-```
+    
+  ```json
+      "ConnectionStrings": {
+        "DefaultConnection": "Server=sqlserver,1433;Database=OmieDb;User Id=sa;Password=My#Stron8P4ssw0rd;TrustServerCertificate=True;"
+      }
+  ```
 
 ##### Nota:
-    - O parâmetro TrustServerCertificate=True é necessário para ambientes locais.
-Caso seja necessario, substitua "OmieDb" pelo nome real do seu banco de dados.
+  - O parâmetro TrustServerCertificate=True é necessário para ambientes locais. 
+  - Caso seja necessário, substitua "OmieDb" pelo nome real do seu banco de dados.
 
-### Passo 4: Aplicar Migrações do Banco de Dados (Se Usando EF Core)
+### Passo 4: EnsureDatabaseCreated
+    
+- A solução também inclui um método de extensão EnsureDatabaseCreated no projeto **Omie.IoC**. 
+- Esse método verifica a necessidade de criar o banco de dados e rodar migrações automaticamente durante a inicialização da aplicação. 
+- Dessa forma a solição garante que o banco de dados **OmieDb** seja criado e as migrações sejam aplicadas.
+  
+  - ### Aplicar Migrações do Banco de Dados (Se Usando EF Core)
+    - Se necessároi, aplique as migrações do banco de dados antes de rodar a API:
 
-Caso seu projeto utilize Entity Framework Core, aplique as migrações do banco de dados antes de rodar a API:
-
-```cmd
-dotnet ef database update
-```
+      Caso deseje testar as migrações manualmente siga os passos abaixo:
+    ```cmd
+    dotnet ef database update
+    ```
 
     - Se ainda não houver migrações criadas, gere a primeira:
 
-```cmd
-dotnet ef migrations add InitialCreate
-dotnet ef database update
-```
+    ```cmd
+    dotnet ef migrations add InitialCreate
+    dotnet ef database update
+    ```
 
 ### Passo 5: Executar a WebAPI
 
-Para iniciar a API, navegue até a pasta raiz do projeto e execute:
+Para iniciar a API, navegue até a pasta raiz do projeto da web API que deseja e execute:
 
 ```cmd
 dotnet run
@@ -131,6 +121,26 @@ Estou usando Docker Compose, execute:
 ```bash
 docker-compose up --build
 ```
+## Funcionalidades Gerais
+
+  - Operações CRUD: Cada Web API suporta operações de Criação, Leitura, Atualização e Exclusão para seus respectivos domínios.
+  - Integração com Banco de Dados: Utiliza Entity Framework Core para operações ORM com SQL Server.
+  - Autenticação e Autorização: Implementa autenticação JWT Bearer para proteger endpoints, com Omie.WebApiAuthorization gerando tokens.
+  - Testes Abrangentes: Inclui testes unitários e de integração (e.g., ClienteTests, ProdutoTests, VendasTests) e testes de configuração (ConfigurationLoaderTests).
+  - Documentação com Swagger: Oferece documentação interativa para todos os endpoints, com suporte a tokens JWT na UI do Swagger.
+    - ***Princípios SOLID:***
+      - **Responsabilidade Única:** Cada classe ou método lida com uma funcionalidade específica.
+      - **Aberto/Fechado:** O sistema é aberto para extensão, mas fechado para modificação.
+      - **Substituição de Liskov:** Classes derivadas podem substituir classes base sem alterar a funcionalidade.
+      - **Segregação de Interface:** Clientes não dependem de interfaces que não utilizam.
+      - **Inversão de Dependência:** Módulos de alto nível dependem de abstrações, não de implementações.
+      Web APIs Específicas
+
+  - **Omie.WebApiVendas:** Gerencia operações relacionadas a vendas via endpoints como /api/Vendas.
+  - **Omie.WebApiClientes:** Gerencia dados de clientes via endpoints como /api/Clientes. 
+  - **Omie.WebApiProdutos:** Gerencia dados de produtos via endpoints como /api/Produtos. 
+  - **Omie.WebApiAuthorization:** Gerencia autenticação e geração de tokens JWT via /api/authenticate. 
+  - **Todas as Web APIs** herdam de ****Omie.Common.Abstractions.Controllers.OmieCrudBaseController**** e utilizam abstrações como **IAppServiceBase**, **IDataRepositoryBase**, e **IResourceDtoBase** de **Omie.Common.Abstractions**.
 
 ### Passo 6: Testar a API
 
@@ -156,6 +166,16 @@ Para remover completamente o container:
 ```cpp
 docker rm -f sqlserver_container
 ```
+
+### Passo 8: Estratégia para Obter um Token JWT Usando Omie.WebApiAuthorization
+
+Para autenticar e obter um token JWT para acessar endpoints protegidos , siga estas etapas:
+
+- #### Execute o projeto ```OmieAuthentication.WebApi```
+  - em seguinda access: ```http://localhost:5030```
+  - Endpoint: Use o endpoint ```/api/Authentic/uthenticating``` em Omie.WebApiAuthorization para solicitar um token. 
+    - Uma requisição POST com credenciais. 
+    - O token é um JWT que **NÃO** pode ser usado para autenticar requisições subsequentes às outras Web APIs.
 
 ### Solução de Problemas
 
