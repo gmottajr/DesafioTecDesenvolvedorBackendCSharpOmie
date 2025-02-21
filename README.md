@@ -1,5 +1,5 @@
 # Desafio Tecnico Desenvolvedor Backend C# Omie
-Descrição do Cenário Você foi contratado para criar uma API que suporte as funcionalidades apresentadas no mockup de tela fornecido em anexo. A API deve ser capaz de gerenciar e processar as informações exibidas na interface, permitindo que elas sejam persistidas de forma consistente.  
+Você foi contratado para criar uma API que suporte as funcionalidades apresentadas no mockup de tela fornecido em anexo. A API deve ser capaz de gerenciar e processar as informações exibidas na interface, permitindo que elas sejam persistidas de forma consistente.  
 
 ## Executando a WebAPI Backend
 Este guia fornece instruções detalhadas para executar a WebAPI e garantir que o banco de dados SQL Server em Docker esteja disponível e configurado corretamente.
