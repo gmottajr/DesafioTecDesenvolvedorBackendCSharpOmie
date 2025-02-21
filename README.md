@@ -16,7 +16,7 @@ Antes de começar, certifique-se de ter os seguintes requisitos instalados:
 ## Configuração e Inicialização dos Contêineres
 
 ###   Execução Automatizada: 
-  - O projeto está **configurado** para iniciar **automaticamente** o SQL Server via Docker Compose toda vez que uma Web API é buildada. 
+  - O projeto está **configurado** para iniciar **automaticamente** o SQL Server via Docker Compose toda vez que uma Web API é bildada. 
   - No projeto OmieVendas.WebApi, a seguinte configuração foi adicionada ao arquivo OmieVendas.WebApi.csproj para garantir essa integração:
 
 ```xml
@@ -24,7 +24,7 @@ Antes de começar, certifique-se de ter os seguintes requisitos instalados:
     <Exec Command="docker compose up -d" WorkingDirectory="$(MSBuildProjectDirectory)/../" />
   </Target>
 ```
-### Caseja nessário fazer manualmente
+### Caso seja nessário fazer manualmente
 
 - #### Passo 1: Suba os contêineres com Docker Compose:
 
