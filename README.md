@@ -117,10 +117,6 @@ Para iniciar a API, navegue até a pasta raiz do projeto da web API que deseja e
 dotnet run
 ```
 
-Estou usando Docker Compose, execute:
-```bash
-docker-compose up --build
-```
 ## Funcionalidades Gerais
 
   - Operações CRUD: Cada Web API suporta operações de Criação, Leitura, Atualização e Exclusão para seus respectivos domínios.
