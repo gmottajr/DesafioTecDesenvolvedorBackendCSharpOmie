@@ -142,7 +142,7 @@ dotnet run
     - A implementação de Omie.WebApiVendas foi projetada para aderir estritamente ao que o protótipo da interface demonstra. O protótipo indica que o usuário deve inserir manualmente apenas o nome do cliente e o nome do produto com o valor unitário, sem a necessidade de inputs sistemáticos como clientId ou productId. Por isso, não foi implementado um CRUD completo para vendas com IDs ou comunicação direta com Omie.WebApiClientes e Omie.WebApiProdutos, mantendo a simplicidade e fidelidade ao escopo do desafio. 
   - **Intenção de Design:** 
     - A implementação das APIs de produto (```Omie.WebApiProdutos```) e cliente (```Omie.WebApiClientes```) foi incluída para demonstrar como a ***Orientação a Objetos (OOP)*** pode ser aplicada para seguir os princípios ***DRY (Don’t Repeat Yourself)*** e ***SOLID***, além de mostrar como padrões de design (**Design Patterns**) podem colaborar na construção de aplicações escaláveis, menos acopladas e mais manuteníveis. 
-    - Isso reflete uma abordagem estratégica para construir uma arquitetura robusta **escalável** e sustentável, mesmo que o protótipo não exija integração direta entre as APIs.
+    - Isso reflete uma abordagem estratégica para construir uma arquitetura robusta **escalável** e sustentável, preparada para o cenáro real aonde **surgiria um segundo protótotipo**, o qual, sim, iria exijir a integração direta entre as APIs de Cliente e Produto.
 
   - **Omie.WebApiVendas:** Gerencia operações relacionadas a vendas via endpoints como /api/Vendas.
   - **Omie.WebApiClientes:** Gerencia dados de clientes via endpoints como /api/Clientes. 
